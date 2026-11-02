@@ -1,0 +1,1118 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light dark"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Физика 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;700&family=PT+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column on graph paper; exam answers sit in answer-sheet cells, formulas in serif italic */
+:root{
+  --paper:#F3F7F6; --card:#FFFFFF; --ink:#11252A; --muted:#566B70; --line:#CFDCD9; --grid:#DCE8E5;
+  --accent:#0B7A6A; --accent-ink:#FFFFFF; --accent-soft:#E0F1EE;
+  --ok:#1D7A3E; --ok-soft:#E2F2E6; --warn:#97600C; --warn-soft:#F8EED9; --bad:#B4372F; --bad-soft:#FAE3E0; --lock:#97A6A9;
+  --f-display:"Exo 2","IBM Plex Sans",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --f-formula:"PT Serif",Georgia,"Times New Roman",serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0C1517; --card:#132024; --ink:#E3EEEC; --muted:#93A9AC; --line:#25383C; --grid:#1B2B2F;
+  --accent:#4FD1B9; --accent-ink:#0C1517; --accent-soft:#17332F;
+  --ok:#5BCB83; --ok-soft:#163023; --warn:#E5AE52; --warn-soft:#33281A; --bad:#F27B70; --bad-soft:#3A1E1F; --lock:#566A6E;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0C1517; --card:#132024; --ink:#E3EEEC; --muted:#93A9AC; --line:#25383C; --grid:#1B2B2F;
+  --accent:#4FD1B9; --accent-ink:#0C1517; --accent-soft:#17332F;
+  --ok:#5BCB83; --ok-soft:#163023; --warn:#E5AE52; --warn-soft:#33281A; --bad:#F27B70; --bad-soft:#3A1E1F; --lock:#566A6E;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:20px 56px;display:grid;gap:22px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem);letter-spacing:-.01em;line-height:1.1}
+h2{font-family:var(--f-display);font-weight:600;font-size:1.1rem}
+p{margin:0}
+b{font-weight:600}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kicker{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.f{font-family:var(--f-formula);font-style:italic;font-size:1.08em;white-space:nowrap}
+.f i{font-style:italic}
+.f sub{font-style:normal;font-family:var(--f-body);font-size:.68em}
+.top{display:grid;gap:6px;padding:16px;border-radius:var(--r);border:1px solid var(--line);
+  background-color:var(--card);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:12px 12px}
+.target{font-size:.88rem;color:var(--muted)}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{display:grid;gap:6px;min-width:0}
+.stat .lbl{font-size:.72rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.cells{display:flex;gap:3px;flex-wrap:wrap}
+.cell{display:inline-grid;place-items:center;min-width:26px;height:34px;padding:0 4px;border:1.5px solid var(--line);background:var(--card);font-family:var(--f-mono);font-weight:700;font-size:1.05rem;border-radius:3px;font-variant-numeric:tabular-nums}
+.cell.sep{border-color:transparent;background:transparent;min-width:10px;padding:0}
+.cell.empty{color:var(--lock)}
+
+.today{display:grid;gap:10px}
+.btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:var(--r);padding:14px 16px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary .sub{color:inherit;opacity:.85}
+.btn .t{font-weight:600;font-size:1.02rem}
+.btn .sub{font-size:.85rem;color:var(--muted)}
+.btn .arr{font-family:var(--f-mono);font-weight:700}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.small{padding:10px 14px;width:auto;display:inline-flex}
+.note{font-size:.9rem;color:var(--muted)}
+
+.map{display:grid;gap:12px}
+.block{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.block>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px}
+.block>summary::-webkit-details-marker{display:none}
+.block>summary .bt{font-weight:600}
+.block>summary .bm{font-size:.82rem;color:var(--muted);text-align:right}
+.topics{display:grid;border-top:1px solid var(--line)}
+.topic{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 16px;border:0;border-bottom:1px solid var(--line);background:transparent;text-align:left;width:100%;cursor:pointer}
+.topic:last-child{border-bottom:0}
+.topic:hover:not([disabled]){background:var(--accent-soft)}
+.topic[disabled]{cursor:default;color:var(--lock)}
+.topic .n{font-family:var(--f-mono);font-weight:700;font-size:.85rem;min-width:3ch;text-align:center;border:1.5px solid var(--line);border-radius:3px;padding:2px 4px}
+.topic[disabled] .n{border-style:dashed}
+.topic .tt{min-width:0;display:grid;gap:2px}
+.topic .ts{font-size:.78rem;color:var(--muted)}
+.topic[disabled] .ts{color:var(--lock)}
+.topic .bar{height:3px;background:var(--line);border-radius:2px;margin-top:4px;overflow:hidden}
+.topic .bar i{display:block;height:100%;background:var(--accent)}
+.chip{font-size:.72rem;font-weight:600;letter-spacing:.03em;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.chip.new{border:1px solid var(--line);color:var(--muted)}
+.chip.learning{background:var(--warn-soft);color:var(--warn)}
+.chip.mastered{background:var(--accent-soft);color:var(--accent)}
+.chip.fixed{background:var(--ok-soft);color:var(--ok)}
+.chip.lock{color:var(--lock);border:1px dashed var(--line)}
+.boss{display:grid;gap:8px;padding:14px 16px;border-top:1px solid var(--line);background:var(--paper)}
+
+details.how{border-top:1px solid var(--line);padding-top:14px}
+details.how summary{cursor:pointer;font-weight:600}
+details.how ul{margin:10px 0 0;padding-left:20px;display:grid;gap:6px;color:var(--muted)}
+.sync{font-size:.8rem;color:var(--muted)}
+.backup{display:grid;gap:10px;margin-top:10px}
+.backup textarea{width:100%;min-width:0;border:1.5px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:8px 10px;font-family:var(--f-mono);font-size:.8rem;resize:vertical}
+.lesson .graph{margin-block:2px}
+
+.back{border:0;background:transparent;color:var(--accent);cursor:pointer;padding:0;font-weight:600;justify-self:start}
+.lesson{display:grid;gap:14px;max-width:65ch}
+.lesson h3{font-family:var(--f-display);font-weight:600;font-size:1.02rem;margin-top:6px}
+.lesson ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.life{border:1px solid var(--line);background:var(--card);border-radius:var(--r);padding:12px 14px}
+.life .kicker{display:block;margin-bottom:4px;color:var(--accent)}
+.termshead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:6px}
+.termshead h3{margin:0}
+.terms{display:grid;border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.term{border-bottom:1px solid var(--line)}
+.term:last-child{border-bottom:0}
+.term>summary{list-style:none;cursor:pointer;display:grid;gap:2px;padding:10px 14px}
+.term>summary::-webkit-details-marker{display:none}
+.term>summary:hover{background:var(--accent-soft)}
+.term .tn{font-weight:600}
+.term .td{color:var(--muted)}
+.term .tl{font-size:.8rem;font-weight:600;color:var(--accent);margin-top:4px}
+.term .tl::after{content:" ↓"}
+.term[open] .tl::after{content:" ↑"}
+.term .tx{margin:0 14px 12px;padding:6px 0 6px 12px;border-left:3px solid var(--accent)}
+
+.graph{width:100%;max-width:420px;height:auto;display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.graph .gl{stroke:var(--grid);stroke-width:1}
+.graph .ax{stroke:var(--ink);stroke-width:1.5}
+.graph .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.graph .tk{fill:var(--muted);font-family:var(--f-mono);font-size:11px}
+.graph .al{fill:var(--ink);font-family:var(--f-formula);font-style:italic;font-size:13px}
+.graph .pt{fill:var(--accent)}
+.graph .lb{fill:var(--ink);font-family:var(--f-mono);font-weight:700;font-size:12px}
+.tablewrap{overflow-x:auto}
+.qtable{border-collapse:collapse;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.qtable th,.qtable td{border:1px solid var(--line);padding:6px 12px;text-align:center;background:var(--card)}
+.qtable th{font-family:var(--f-formula);font-style:italic;font-weight:400}
+
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qcard{display:grid;gap:14px}
+.qtext{font-size:1.1rem;font-weight:600;line-height:1.45}
+.qdef{font-size:1.05rem;border-left:3px solid var(--accent);padding:4px 0 4px 12px}
+.opts{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;text-align:left;width:100%;border:1.5px solid var(--line);background:var(--card);border-radius:var(--r);padding:12px 14px;cursor:pointer}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt .num{font-family:var(--f-mono);font-weight:700;display:inline-grid;place-items:center;width:26px;height:26px;border:1.5px solid var(--line);border-radius:3px;font-size:.9rem}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .num{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .num{border-color:var(--ok);background:var(--ok);color:var(--card)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .num{border-color:var(--bad);background:var(--bad);color:var(--card)}
+.opt[disabled]{cursor:default}
+.legend{display:grid;gap:4px;font-size:.92rem;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:10px 14px}
+.legend .ln{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline}
+.legend .d{font-family:var(--f-mono);font-weight:700}
+.rows{display:grid;gap:10px}
+.rowq{display:grid;gap:8px;border:1.5px solid var(--line);background:var(--card);border-radius:var(--r);padding:12px 14px}
+.rowq .rl{font-weight:600}
+.rc{display:flex;gap:8px;flex-wrap:wrap}
+.rb{min-width:44px;height:40px;border:1.5px solid var(--line);background:var(--paper);border-radius:6px;font-family:var(--f-mono);font-weight:700;cursor:pointer}
+.rb.sel{border-color:var(--accent);background:var(--accent);color:var(--accent-ink)}
+.rb.right{border-color:var(--ok);background:var(--ok);color:var(--card)}
+.rb.wrong{border-color:var(--bad);background:var(--bad);color:var(--card)}
+.rb[disabled]{cursor:default}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.numrow input{width:10ch;min-width:0;height:44px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);padding:0 10px;font-family:var(--f-mono);font-weight:700;font-size:1.1rem}
+.numrow input.right{border-color:var(--ok);background:var(--ok-soft)}
+.numrow input.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.numrow .pm{height:44px;min-width:44px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);font-family:var(--f-mono);font-weight:700;cursor:pointer}
+.numrow .unit{font-weight:600}
+.answerline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
+.fb{border-radius:var(--r);padding:12px 14px;display:grid;gap:6px}
+.fb.ok{background:var(--ok-soft)}
+.fb.bad{background:var(--bad-soft)}
+.fb .h{font-weight:700}
+.fb.ok .h{color:var(--ok)}
+.fb.bad .h{color:var(--bad)}
+.result{display:grid;gap:14px}
+.big{font-family:var(--f-display);font-weight:800;font-size:2.6rem;line-height:1}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.kbd{font-family:var(--f-mono);font-size:.75rem}
+@media (max-width:420px){.cell{min-width:22px;height:30px;font-size:.95rem}.stat .lbl{font-size:.66rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+function fmtNum(v){ return String(Math.round(v*1000)/1000).replace(".", ","); }
+function graph(o){
+  const W=340, H=210, L=44, R=40, T=24, B=30;
+  const [x0,x1] = o.x, [y0,y1] = o.y;
+  const sx = v => L + (v-x0)/(x1-x0)*(W-L-R), sy = v => T + (y1-v)/(y1-y0)*(H-T-B);
+  let s = "";
+  for (let v=x0; v<=x1+1e-9; v+=o.dx) s += `<line class="gl" x1="${sx(v)}" y1="${sy(y0)}" x2="${sx(v)}" y2="${sy(y1)}"/>`;
+  for (let v=y0; v<=y1+1e-9; v+=o.dy) s += `<line class="gl" x1="${sx(x0)}" y1="${sy(v)}" x2="${sx(x1)}" y2="${sy(v)}"/>`;
+  s += `<line class="ax" x1="${sx(x0)}" y1="${sy(0)}" x2="${sx(x1)+16}" y2="${sy(0)}"/>`;
+  s += `<line class="ax" x1="${sx(x0)}" y1="${sy(y0)}" x2="${sx(x0)}" y2="${sy(y1)-12}"/>`;
+  const ty = y0 < 0 ? sy(y0)+15 : sy(0)+15;
+  for (let v=x0+o.dx; v<=x1+1e-9; v+=o.dx) s += `<text class="tk" x="${sx(v)}" y="${ty}" text-anchor="middle">${fmtNum(v)}</text>`;
+  for (let v=y0; v<=y1+1e-9; v+=o.dy) if (Math.abs(v)>1e-9) s += `<text class="tk" x="${sx(x0)-7}" y="${sy(v)+4}" text-anchor="end">${fmtNum(v)}</text>`;
+  s += `<text class="tk" x="${sx(x0)-7}" y="${y0 < 0 ? sy(0)+4 : sy(0)+15}" text-anchor="end">0</text>`;
+  s += `<polyline class="ln" points="${o.pts.map(p => sx(p[0])+","+sy(p[1])).join(" ")}"/>`;
+  (o.marks||[]).forEach(m => { s += `<circle class="pt" cx="${sx(m[0])}" cy="${sy(m[1])}" r="3.5"/><text class="lb" x="${sx(m[0])+(m[3]||6)}" y="${sy(m[1])+(m[4]||-6)}">${m[2]}</text>`; });
+  s += `<text class="al" x="${sx(x1)+16}" y="${sy(0)-7}" text-anchor="end">${o.xl}</text>`;
+  s += `<text class="al" x="${sx(x0)+7}" y="${sy(y1)-6}">${o.yl}</text>`;
+  return `<svg class="graph" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria||"График"}">${s}</svg>`;
+}
+function table(rows){ return `<div class="tablewrap"><table class="qtable">${rows.map(r => `<tr><th>${r[0]}</th>${r.slice(1).map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</table></div>`; }
+const F = s => `<span class="f">${s}</span>`;
+const CHANGE = ["увеличивается","уменьшается","не изменяется"];
+const NEW_TOPICS_7_10 = [
+{ id:"t7", num:7, title:"МКТ, уравнение состояния, изопроцессы", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 7 проверяет МКТ и газовые законы: связь температуры со средней кинетической энергией молекул, уравнение Менделеева — Клапейрона, изопроцессы. Три задачи из восьми даны графиками. Ответ — число."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:[
+    "<b>Только кельвины.</b> "+F("<i>T</i> = <i>t</i> + 273")+". Градусы Цельсия в формулы газа не подставляют.",
+    "<b>Перевод в СИ.</b> кПа → Па (×1000), л → м³ (÷1000), г → кг. Если ответ — «во сколько раз», единицы переводить не нужно, а температура всё равно в К.",
+    "<b>Что постоянно.</b> Сначала реши, какие величины не меняются: масса газа и один из параметров (<i>T</i>, <i>p</i> или <i>V</i>). Газ выпустили или добавили — готовый изопроцесс не подходит.",
+    "<b>Единицы ответа.</b> Просят кПа, а получилось в Па — раздели на 1000."
+   ]},
+   {h:"Как читать график"},
+   {ul:[
+    "<b>p(T), прямая через начало координат</b> — изохора: давление меняется во столько же раз, во сколько <i>T</i>.",
+    "<b>p(T), горизонталь</b> — изобара: объём меняется во столько же раз, во сколько <i>T</i>.",
+    "<b>V(T), прямая через начало координат</b> — изобара."
+   ]},
+   {svg: graph({pts:[[0,0],[400,200]],x:[0,500],y:[0,250],dx:100,dy:50,xl:"T, К",yl:"p, кПа"})},
+   {life:"Мяч, вынесенный на мороз, становится мягче: газ внутри остыл, давление упало, а воздуха в мяче стало не меньше."}
+  ],
+  cards:[
+   {type:"formula",name:"Основное уравнение МКТ",f:"<i>p</i> = (2/3)<i>n</i><i>Ē</i>",life:"Чем больше молекул воздуха в каждом кубометре шины и чем быстрее они летают, тем сильнее воздух давит на покрышку."},
+   {type:"formula",name:"Энергия молекул и температура",f:"<i>Ē</i> = (3/2)<i>kT</i>",life:"В жаркий день молекулы воздуха в среднем движутся быстрее, чем зимой: средняя кинетическая энергия растёт вместе с температурой."},
+   {type:"formula",name:"Уравнение Менделеева — Клапейрона",f:"<i>pV</i> = <i>νRT</i>,  <i>ν</i> = <i>m</i>/<i>M</i>",life:"Накачал мяч: воздуха (ν) стало больше, объём почти тот же, значит давление выросло."},
+   {type:"formula",name:"Перевод температуры в кельвины",f:"<i>T</i> = <i>t</i> + 273",life:"В комнате +27 °C — это 300 К. В формулу газа идёт именно 300, а не 27."},
+   {type:"term",term:"Изохорный процесс",def:"Процесс при постоянных объёме и массе газа, для него p/T = const.",life:"Баллончик с аэрозолем нельзя греть: объём баллончика не меняется, поэтому давление внутри растёт и он может взорваться."},
+   {type:"term",term:"Изобарный процесс",def:"Процесс при постоянных давлении и массе газа, для него V/T = const.",life:"Воздушный шарик, вынесенный из тёплой комнаты на мороз, сжимается: давление внутри почти равно атмосферному, а объём падает вместе с температурой."},
+   {type:"term",term:"Изотермический процесс",def:"Процесс при постоянных температуре и массе газа, для него pV = const.",life:"Закрыл пальцем носик шприца и медленно давишь на поршень: температура та же, объём меньше, давление больше."}
+  ],
+  qs:[
+   {type:"num",q:"Найдите среднюю кинетическую энергию поступательного движения молекул гелия при температуре 27 °C. Ответ дайте в 10⁻²¹ Дж.",unit:"·10⁻²¹ Дж",ans:6.21,calc:"1.5*1.38*300/100",why:"T = 27 + 273 = 300 К. Ē = 3kT/2 = 1,5 · 1,38·10⁻²³ · 300 = 6,21·10⁻²¹ Дж."},
+   {type:"num",q:"Постоянную массу идеального газа охладили из состояния при температуре 600 К до состояния при температуре 200 К (график). Во сколько раз уменьшился объём газа?",svg:graph({pts:[[200,200],[600,200]],x:[0,700],y:[0,300],dx:100,dy:100,xl:"T, К",yl:"p, кПа"}),unit:"раз",ans:3,calc:"600/200",why:"Горизонталь на графике p(T): давление постоянно, процесс изобарный, V/T = const. V₁/V₂ = T₁/T₂ = 600/200 = 3."},
+   {type:"num",q:"Средняя кинетическая энергия поступательного движения молекул идеального газа увеличилась в 1,5 раза. Начальная температура газа 27 °C. Чему равна конечная температура газа? Ответ дайте в °C.",unit:"°C",ans:177,calc:"300*1.5-273",why:"Ē ~ T, поэтому T₂ = 1,5 · T₁ = 1,5 · 300 = 450 К. В градусах Цельсия t₂ = 450 − 273 = 177 °C."},
+   {type:"num",q:"Концентрация молекул идеального газа 3·10²⁵ м⁻³, средняя кинетическая энергия их поступательного движения 6·10⁻²¹ Дж. Найдите давление газа. Ответ дайте в кПа.",unit:"кПа",ans:120,calc:"2*3e25*6e-21/3/1000",why:"p = 2nĒ/3 = 2 · 3·10²⁵ · 6·10⁻²¹ / 3 = 1,2·10⁵ Па = 120 кПа."},
+   {type:"num",q:"Идеальный газ в количестве 2 моль участвует в изобарном процессе. На рисунке показана зависимость объёма газа от абсолютной температуры. Найдите давление газа. Ответ дайте в кПа.",svg:graph({pts:[[100,2],[400,8]],x:[0,500],y:[0,10],dx:100,dy:2,xl:"T, К",yl:"V, л"}),unit:"кПа",ans:831,calc:"2*8.31*400/0.008/1000",why:"Возьмём точку графика: T = 400 К, V = 8 л = 0,008 м³. p = νRT/V = 2 · 8,31 · 400 / 0,008 = 831000 Па = 831 кПа."},
+   {type:"num",q:"Газ в закрытом баллоне нагрели от 27 °C до 87 °C. Начальное давление газа 150 кПа, масса газа не менялась. Каким стало давление газа? Ответ дайте в кПа.",unit:"кПа",ans:180,calc:"150*(87+273)/(27+273)",why:"Объём постоянен: p₁/T₁ = p₂/T₂. T₁ = 300 К, T₂ = 360 К. p₂ = 150 · 360/300 = 180 кПа."},
+   {type:"num",q:"В сосуде объёмом 8,31 л находится идеальный газ. На рисунке показана зависимость давления газа от температуры при постоянном объёме. Найдите количество вещества газа. Ответ дайте в молях.",svg:graph({pts:[[100,50],[500,250]],x:[0,600],y:[0,300],dx:100,dy:50,xl:"T, К",yl:"p, кПа"}),unit:"моль",ans:0.5,calc:"200000*0.00831/(8.31*400)",why:"Возьмём точку графика: T = 400 К, p = 200 кПа. V = 8,31 л = 0,00831 м³. ν = pV/(RT) = 200000 · 0,00831 / (8,31 · 400) = 0,5 моль."},
+   {type:"num",q:"Баллон вместимостью 10 л содержит 16 г кислорода O₂ (молярная масса 32 г/моль) при температуре 27 °C. Каково давление газа? Ответ дайте в кПа.",unit:"кПа",ans:124.65,calc:"(16/32)*8.31*300/0.01/1000",why:"ν = m/M = 16/32 = 0,5 моль; T = 300 К; V = 10 л = 0,01 м³. p = νRT/V = 0,5 · 8,31 · 300 / 0,01 = 124650 Па = 124,65 кПа."}
+  ]},
+
+{ id:"t8", num:8, title:"Теплота, работа газа, первый закон", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 8 проверяет умение считать количество теплоты, работу газа и применять первый закон термодинамики и формулу КПД. Две задачи из восьми даны графиком p(V). Ответ — число."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:[
+    "<b>Плавление и кипение.</b> Температура не меняется, поэтому «<i>c</i>Δ<i>t</i>» не нужно: берём только <i>λm</i> или <i>Lm</i>. Если лёд холоднее 0 °C, сначала нагрей его до 0 °C, потом плавь — теплоты складываются.",
+    "<b>Единицы.</b> Масса в кг (г → кг), Дж ↔ кДж. На графике p(V): <b>кПа · л = Дж</b>, в СИ переводить не нужно.",
+    "<b>Знаки.</b> Газ расширяется — его работа положительна, сжимается — отрицательна. Газ отдал теплоту — <i>Q</i> отрицательно. Первый закон: "+F("Δ<i>U</i> = <i>Q</i> + <i>A</i><sub>внеш</sub>")+".",
+    "<b>КПД</b> — доля полезной работы от <i>полученной</i> теплоты. Смотри, что просят: проценты или долю."
+   ]},
+   {h:"Как читать график p(V)"},
+   {ul:[
+    "<b>Работа газа</b> — площадь под графиком до оси V. Горизонталь на высоте 200 кПа от 1 до 4 л даёт 200 · 3 = 600 Дж.",
+    "Вправо (<i>V</i> растёт) — работа газа положительна, влево — отрицательна.",
+    "Замкнутый цикл по часовой стрелке: работа за цикл — площадь внутри фигуры."
+   ]},
+   {svg: graph({pts:[[1,200],[4,200]],x:[0,5],y:[0,300],dx:1,dy:100,xl:"V, л",yl:"p, кПа"})},
+   {life:"Когда качаешь шину насосом, насос нагревается: ты совершаешь работу над воздухом, и она идёт на рост его внутренней энергии."}
+  ],
+  cards:[
+   {type:"formula",name:"Нагревание и охлаждение",f:"<i>Q</i> = <i>cm</i>(<i>t</i><sub>2</sub> − <i>t</i><sub>1</sub>)",life:"Чтобы нагреть литр воды в чайнике на 80 °C, нужно около 340 кДж, поэтому чайник греется несколько минут."},
+   {type:"formula",name:"Плавление",f:"<i>Q</i> = <i>λm</i>",life:"Пока лёд в стакане не растаял, вся теплота из комнаты уходит на плавление, и напиток остаётся холодным, около 0 °C."},
+   {type:"formula",name:"Парообразование",f:"<i>Q</i> = <i>Lm</i>",life:"Вода в чайнике уже кипит, а ты ещё держишь его на плите: теплота идёт на превращение воды в пар, температура остаётся 100 °C."},
+   {type:"formula",name:"Работа газа при постоянном давлении",f:"<i>A</i> = <i>p</i>(<i>V</i><sub>2</sub> − <i>V</i><sub>1</sub>)",life:"Нагретый воздух в шприце без иглы выталкивает поршень: газ расширяется и совершает работу."},
+   {type:"formula",name:"Первый закон термодинамики",f:"<i>Q</i> = Δ<i>U</i> + <i>A</i><sub>газа</sub>",life:"Из баллончика дезодоранта газ вырывается, расширяется и совершает работу, из-за чего баллончик холодный."},
+   {type:"formula",name:"КПД теплового двигателя",f:"<i>η</i> = (<i>Q</i><sub>1</sub> − <i>Q</i><sub>2</sub>)/<i>Q</i><sub>1</sub>",life:"Двигатель машины сжигает бензин, но полезной работой становится лишь часть теплоты, остальное уходит в выхлоп и радиатор."},
+   {type:"term",term:"Работа газа по графику",def:"Площадь под графиком p(V) между начальным и конечным объёмом, а за цикл — площадь внутри замкнутой фигуры.",life:"Как путь по графику скорости считают площадью, так и работу газа на графике p(V): чем выше и шире, тем работы больше."}
+  ],
+  qs:[
+   {type:"num",q:"Какое количество теплоты необходимо, чтобы нагреть 2 кг воды от 20 °C до 70 °C? Удельная теплоёмкость воды 4200 Дж/(кг·К). Ответ дайте в кДж.",unit:"кДж",ans:420,calc:"4200*2*(70-20)/1000",why:"Q = cmΔt = 4200 · 2 · 50 = 420000 Дж = 420 кДж."},
+   {type:"num",q:"Идеальный газ расширяется, его состояние меняется по графику, показанному на рисунке. Найдите работу газа в этом процессе. Ответ дайте в Дж.",svg:graph({pts:[[2,100],[6,300]],x:[0,8],y:[0,400],dx:1,dy:100,xl:"V, л",yl:"p, кПа"}),unit:"Дж",ans:800,calc:"(100+300)/2*(6-2)",why:"Работа — площадь трапеции под графиком: (100 + 300)/2 · (6 − 2) = 800 кПа·л = 800 Дж."},
+   {type:"num",q:"Лёд массой 200 г при температуре −10 °C нагрели до 0 °C и полностью расплавили. Какое количество теплоты потребовалось? Удельная теплоёмкость льда 2100 Дж/(кг·К), удельная теплота плавления льда 3,3·10⁵ Дж/кг. Ответ дайте в кДж.",unit:"кДж",ans:70.2,calc:"(2100*0.2*10+3.3e5*0.2)/1000",why:"Q = cmΔt + λm = 2100 · 0,2 · 10 + 3,3·10⁵ · 0,2 = 4200 + 66000 = 70200 Дж = 70,2 кДж."},
+   {type:"num",q:"Газ при постоянном давлении 200 кПа расширился от 3 л до 8 л. Какую работу совершил газ? Ответ дайте в Дж.",unit:"Дж",ans:1000,calc:"200000*(8-3)/1000",why:"A = pΔV = 200·10³ Па · 5·10⁻³ м³ = 1000 Дж."},
+   {type:"num",q:"Над идеальным газом внешние силы совершили работу 300 Дж, при этом газ отдал окружающей среде 100 Дж теплоты. На сколько джоулей изменилась внутренняя энергия газа?",unit:"Дж",ans:200,calc:"-100+300",why:"ΔU = Q + A_внеш. Газ отдал теплоту, значит Q = −100 Дж. ΔU = −100 + 300 = 200 Дж (энергия выросла)."},
+   {type:"num",q:"На рисунке показан цикл, который совершает идеальный газ (обход по часовой стрелке). Найдите работу газа за цикл. Ответ дайте в Дж.",svg:graph({pts:[[1,100],[1,300],[4,300],[4,100],[1,100]],x:[0,5],y:[0,400],dx:1,dy:100,xl:"V, л",yl:"p, кПа"}),unit:"Дж",ans:600,calc:"(4-1)*(300-100)",why:"Работа за цикл — площадь прямоугольника: (4 − 1) л · (300 − 100) кПа = 600 Дж. Обход по часовой стрелке, поэтому работа положительна."},
+   {type:"num",q:"Тепловой двигатель за цикл получает от нагревателя 800 Дж теплоты и отдаёт холодильнику 600 Дж. Каков КПД двигателя? Ответ дайте в процентах.",unit:"%",ans:25,calc:"(800-600)/800*100",why:"Полезная работа A = Q₁ − Q₂ = 200 Дж. η = A/Q₁ = 200/800 = 0,25 = 25 %."},
+   {type:"num",q:"Какую массу воды, нагретой до температуры кипения (100 °C), можно полностью превратить в пар, передав ей 1150 кДж теплоты? Удельная теплота парообразования воды 2,3·10⁶ Дж/кг. Ответ дайте в кг.",unit:"кг",ans:0.5,calc:"1150e3/2.3e6",why:"Температура уже 100 °C и не меняется, значит Q = Lm. m = Q/L = 1,15·10⁶ / 2,3·10⁶ = 0,5 кг."}
+  ]},
+
+{ id:"t9", num:9, title:"Анализ тепловых процессов: верные утверждения", fmt:"выбор утверждений · 2 балла",
+  lesson:[
+   {p:"Задание 9 — анализ тепловых процессов по графику или описанию. Из пяти утверждений нужно выбрать верные, обычно два или три. Полный ответ — 2 балла, одна ошибка — 1 балл."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:[
+    "<b>Горизонталь на графике t(τ)</b> — не «ничего не происходит». Температура постоянна, но вещество получает теплоту, и внутренняя энергия растёт (плавление, кипение).",
+    "<b>Температура и энергия.</b> Внутренняя энергия идеального газа зависит только от <i>T</i>: при <i>T</i> = const она не меняется.",
+    "<b>Прямая — ещё не изопроцесс.</b> Прямая на p(T) или V(T) — изохора или изобара, только если её продолжение идёт через начало координат.",
+    "<b>Насыщенный пар.</b> При постоянной температуре его давление и концентрация не меняются: при сжатии пар просто конденсируется.",
+    "Проверяй каждое утверждение отдельно и по участкам графика. Сомневаешься — посчитай."
+   ]},
+   {h:"Как читать график t(τ)"},
+   {ul:[
+    "Наклонный участок — нагревание, горизонтальный — плавление или кипение.",
+    "При постоянной мощности нагревателя чем положе наклон, тем больше удельная теплоёмкость вещества."
+   ]},
+   {svg: graph({pts:[[0,20],[8,100],[30,100]],x:[0,32],y:[0,120],dx:4,dy:20,xl:"τ, мин",yl:"t, °C"})},
+   {life:"Чайник закипел: термометр застыл на 100 °C, но плита продолжает отдавать теплоту, и вода превращается в пар."}
+  ],
+  cards:[
+   {type:"term",term:"Насыщенный пар",def:"Пар, находящийся в равновесии со своей жидкостью, его давление зависит только от температуры.",life:"Над водой в закрытой банке пар насыщенный: сколько молекул вылетает из воды, столько же в неё возвращается."},
+   {type:"formula",name:"Относительная влажность",f:"<i>φ</i> = <i>p</i>/<i>p</i><sub>нас</sub> · 100 %",life:"В ванной после душа влажность почти 100 %, поэтому зеркало запотевает: пар конденсируется на холодном стекле."},
+   {type:"term",term:"Температура при фазовом переходе",def:"Пока вещество плавится или кипит при неизменном давлении, его температура не меняется, а вся теплота идёт на изменение состояния.",life:"Чайник давно кипит, а термометр показывает всё те же 100 °C."},
+   {type:"formula",name:"Внутренняя энергия одноатомного газа",f:"<i>U</i> = (3/2)<i>νRT</i>",life:"Нагрел воздух в шарике, и его внутренняя энергия выросла; а в большом шаре при той же температуре энергии больше, чем в маленьком."},
+   {type:"formula",name:"Первый закон термодинамики",f:"<i>Q</i> = Δ<i>U</i> + <i>A</i><sub>газа</sub>",life:"Быстро накачал шину: насос нагрелся, потому что работа превратилась в рост внутренней энергии воздуха."},
+   {type:"term",term:"Признаки изопроцессов на графиках",def:"Прямая через начало координат на p(T) — изохора, на V(T) — изобара, а гипербола на p(V) — изотерма.",life:"Шприц с закрытым носиком: если поршень вдавливать медленно, точка на графике p(V) идёт по ветви гиперболы, то есть изотерме."},
+   {type:"formula",name:"Количество теплоты при нагревании",f:"<i>Q</i> = <i>cm</i>Δ<i>t</i>",life:"При одной и той же мощности плиты вода нагревается вдвое медленнее льда: её удельная теплоёмкость вдвое больше."}
+  ],
+  qs:[
+   {type:"multi",q:"На рисунке показан график зависимости температуры вещества от времени при его равномерном нагревании. В момент времени 0 вещество — лёд. Мощность нагревателя постоянна, потерями теплоты можно пренебречь. Выберите все верные утверждения.",svg:graph({pts:[[0,-20],[2,0],[18,0],[26,40]],x:[0,28],y:[-20,40],dx:2,dy:20,xl:"τ, мин",yl:"t, °C"}),opts:["В течение первых двух минут вещество находится в твёрдом состоянии.","На участке 2–18 мин внутренняя энергия вещества остаётся постоянной.","В момент времени 10 мин в сосуде одновременно находятся лёд и вода.","Удельная теплоёмкость воды меньше удельной теплоёмкости льда.","Температура плавления вещества равна 0 °C."],ans:[0,2,4],why:"0–2 мин: лёд нагревается. 2–18 мин: идёт плавление, температура 0 °C постоянна, но внутренняя энергия растёт, поэтому утверждение про постоянную внутреннюю энергию неверно. Лёд нагрелся на 20 °C за 2 мин (10 °C/мин), вода на 40 °C за 8 мин (5 °C/мин) при той же мощности: теплоёмкость воды больше, значит утверждение про теплоёмкость неверно."},
+   {type:"multi",q:"В цилиндре под поршнем находятся только вода и её насыщенный пар (воздуха нет). Температуру поддерживают постоянной и медленно вдвигают поршень, уменьшая объём. Часть пара при этом конденсируется, но вода и пар остаются. Выберите все верные утверждения.",opts:["Давление в цилиндре не меняется.","Масса воды в цилиндре уменьшается.","Концентрация молекул пара остаётся постоянной.","Относительная влажность пара уменьшается.","Масса пара в цилиндре увеличивается."],ans:[0,2],why:"Пока есть жидкость, пар насыщенный: его давление зависит только от T и не меняется, а p = nkT, значит и концентрация n постоянна. Пар конденсируется: масса воды растёт, масса пара падает, влажность остаётся 100 %."},
+   {type:"multi",q:"На рисунке показан график циклического процесса 1–2–3–1 с постоянной массой идеального газа в координатах V–T. Выберите все верные утверждения.",svg:graph({pts:[[200,2],[400,4],[400,2],[200,2]],x:[0,500],y:[0,5],dx:100,dy:1,xl:"T, К",yl:"V, л",marks:[[200,2,"1",-14,14],[400,4,"2",6,-6],[400,2,"3",6,14]]}),opts:["В процессе 1–2 давление газа постоянно.","В процессе 2–3 давление газа уменьшается.","В процессе 2–3 внутренняя энергия газа не изменяется.","В процессе 3–1 газ совершает положительную работу.","В состоянии 3 давление газа в 2 раза больше, чем в состоянии 1."],ans:[0,2,4],why:"1–2: V/T = 2/200 = 4/400, прямая идёт через начало координат, значит p = const. 2–3: T = const, V уменьшается, давление растёт; U не меняется. 3–1: V = const, работа равна нулю. p ~ T/V: p₃/p₁ = (400/2)/(200/2) = 2."},
+   {type:"multi",q:"Идеальный газ в цилиндре с теплоизолирующими стенками быстро сжимают поршнем, теплообмена с окружающей средой нет. Выберите все верные утверждения.",opts:["Газ не получает и не отдаёт теплоту.","Внутренняя энергия газа увеличивается.","Температура газа остаётся постоянной.","Работа газа положительна.","Средняя кинетическая энергия молекул газа уменьшается."],ans:[0,1],why:"Теплообмена нет: Q = 0. Газ сжимают, работа газа отрицательна, а внешние силы совершают положительную работу: ΔU = Q + A_внеш больше нуля. Значит, T и средняя кинетическая энергия молекул растут."},
+   {type:"multi",q:"На рисунке показан график циклического процесса 1–2–3–1 с постоянной массой идеального газа в координатах p–V. Выберите все верные утверждения.",svg:graph({pts:[[1,300],[3,300],[3,100],[1,300]],x:[0,4],y:[0,400],dx:1,dy:100,xl:"V, л",yl:"p, кПа",marks:[[1,300,"1",-14,-6],[3,300,"2",6,-6],[3,100,"3",6,14]]}),opts:["В процессе 1–2 газ совершает работу 600 Дж.","В процессе 2–3 газ получает теплоту.","Температуры газа в состояниях 1 и 3 одинаковы.","В процессе 3–1 газ совершает отрицательную работу.","Процесс 3–1 является изотермическим."],ans:[0,2,3],why:"1–2: A = pΔV = 300 кПа · 2 л = 600 Дж. 2–3: объём постоянен, давление падает, T падает, газ отдаёт теплоту. p₁V₁ = 300 = p₃V₃, значит T₁ = T₃. 3–1: объём уменьшается, работа газа отрицательна. Изотерма на p–V — гипербола, а не прямая, поэтому 3–1 не изотерма."},
+   {type:"multi",q:"Школьник изучает испарение и кипение жидкостей. Выберите все верные утверждения.",opts:["Жидкость испаряется при любой температуре.","Кипение жидкости происходит при любой температуре.","При кипении температура жидкости не меняется, если давление постоянно.","С ростом внешнего давления температура кипения жидкости уменьшается.","Скорость испарения не зависит от площади поверхности жидкости."],ans:[0,2],why:"Испарение идёт при любой температуре, а кипение — только при температуре кипения, которая при постоянном давлении не меняется. С ростом давления температура кипения растёт. Чем больше площадь поверхности, тем быстрее испарение."}
+  ]},
+
+{ id:"t10", num:10, title:"Как изменятся параметры газа", fmt:"две цифры · 2 балла",
+  lesson:[
+   {p:"Задание 10 — качественный анализ: как меняются две величины в процессе с газом. Ответ — две цифры: 1 — увеличивается, 2 — уменьшается, 3 — не изменяется. Цифры могут повторяться. Иногда нужно установить соответствие между величинами и формулами."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:[
+    "<b>Сначала найди постоянное.</b> «Закрытый сосуд» — <i>V</i> и масса постоянны; «лёгкий поршень» — <i>p</i> постоянно; «медленно» — обычно <i>T</i> постоянна.",
+    "<b>Плотность и концентрация.</b> В закрытом сосуде они не меняются, даже если газ нагрели. Они меняются, когда меняется <i>V</i> или количество газа.",
+    "<b>Средняя кинетическая энергия молекул</b> зависит только от <i>T</i>. <b>Внутренняя энергия</b> идеального газа зависит от <i>T</i> и от количества газа.",
+    "<b>Газ выпустили или добавили.</b> Если <i>T</i> и <i>V</i> постоянны, давление меняется вслед за концентрацией: "+F("<i>p</i> = <i>nkT</i>")+"."
+   ]},
+   {h:"Алгоритм"},
+   {ul:[
+    "Выпиши формулу, связывающую величины, и отметь, что в ней постоянно.",
+    "Реши для каждой величины отдельно: увеличилась, уменьшилась или осталась прежней."
+   ]},
+   {life:"Выпустил часть газа из бутылки с газировкой — давление в ней упало, потому что в том же объёме стало меньше молекул."}
+  ],
+  cards:[
+   {type:"formula",name:"Закон Бойля — Мариотта",f:"<i>pV</i> = const  (<i>T</i> = const)",life:"Закрыл носик шприца и давишь на поршень: объём меньше, давление больше."},
+   {type:"formula",name:"Закон Гей-Люссака",f:"<i>V</i>/<i>T</i> = const  (<i>p</i> = const)",life:"Шарик, внесённый с мороза в тёплую комнату, постепенно раздувается."},
+   {type:"formula",name:"Закон Шарля",f:"<i>p</i>/<i>T</i> = const  (<i>V</i> = const)",life:"Закрытая бутылка, забытая на солнце, становится твёрже: объём тот же, давление растёт."},
+   {type:"formula",name:"Давление и концентрация",f:"<i>p</i> = <i>nkT</i>",life:"Накачал шину: в том же объёме молекул стало больше, концентрация выросла, и давление выросло."},
+   {type:"term",term:"Концентрация и плотность",def:"Концентрация n = N/V и плотность ρ = m/V зависят от объёма, а в закрытом сосуде от температуры не зависят.",life:"В закрытой банке с воздухом молекул сколько было, столько и осталось, хоть на холоде, хоть на батарее."},
+   {type:"term",term:"Средняя кинетическая энергия молекул",def:"Определяется только абсолютной температурой газа и не зависит ни от объёма, ни от давления.",life:"Пока чай не остыл или не нагрелся, средняя энергия молекул воды в нём прежняя, в какую кружку его ни переливай."},
+   {type:"formula",name:"Внутренняя энергия одноатомного газа",f:"<i>U</i> = (3/2)<i>νRT</i>",life:"Выпустил часть воздуха из баллона при той же температуре: молекул стало меньше, значит и внутренней энергии меньше."}
+  ],
+  qs:[
+   {type:"rows",kind:"change",q:"Идеальный газ в закрытом сосуде постоянного объёма нагревают. Как изменятся давление газа и концентрация его молекул?",rows:["Давление газа","Концентрация молекул газа"],ans:[1,3],why:"V и масса газа постоянны, поэтому концентрация n = N/V не меняется. Давление p = nkT растёт вместе с T."},
+   {type:"rows",kind:"change",q:"Идеальный газ медленно расширяют при постоянной температуре. Как изменятся давление газа и средняя кинетическая энергия его молекул?",rows:["Давление газа","Средняя кинетическая энергия молекул"],ans:[2,3],why:"T = const, поэтому Ē = 3kT/2 не меняется. По закону Бойля — Мариотта pV = const: объём растёт, давление падает."},
+   {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта. N — число молекул газа, V — объём, m — масса газа, ν — количество вещества, T — абсолютная температура, k — постоянная Больцмана, R — универсальная газовая постоянная.",rows:["Концентрация молекул газа","Средняя кинетическая энергия поступательного движения молекулы"],choices:["<i>m</i>/<i>V</i>","<i>N</i>/<i>V</i>","3<i>νRT</i>/2","3<i>kT</i>/2"],ans:[2,4],why:"n = N/V — число молекул в единице объёма. Ē = 3kT/2. Формула m/V — это плотность, а 3νRT/2 — внутренняя энергия газа."},
+   {type:"rows",kind:"change",q:"Идеальный газ в цилиндре под лёгким подвижным поршнем нагревают, давление газа при этом остаётся постоянным. Как изменятся объём газа и его плотность?",rows:["Объём газа","Плотность газа"],ans:[1,2],why:"Изобарный процесс: V/T = const, объём растёт. Масса газа постоянна, ρ = m/V, поэтому плотность уменьшается."},
+   {type:"rows",kind:"change",q:"Из закрытого жёсткого сосуда с идеальным газом через кран выпустили часть газа. Температура газа в сосуде поддерживается неизменной. Как изменятся давление газа в сосуде и его внутренняя энергия?",rows:["Давление газа","Внутренняя энергия газа"],ans:[2,2],why:"V и T постоянны, а число молекул уменьшилось: концентрация падает, p = nkT уменьшается. U = 3νRT/2 тоже уменьшается, так как ν стало меньше."},
+   {type:"rows",kind:"change",q:"В закрытый сосуд постоянного объёма, содержащий идеальный газ, закачали ещё такой же газ. Температура газа не изменилась. Как изменятся концентрация молекул газа и его давление?",rows:["Концентрация молекул газа","Давление газа"],ans:[1,1],why:"Молекул в том же объёме стало больше: n = N/V растёт. При неизменной T давление p = nkT растёт вслед за n."},
+   {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта. m — масса газа, M — молярная масса, Nₐ — постоянная Авогадро, n — концентрация молекул, k — постоянная Больцмана, T — абсолютная температура, ν — количество вещества, R — универсальная газовая постоянная.",rows:["Число молекул в газе массой m","Давление идеального газа"],choices:["<i>nkT</i>","<i>mN</i><sub>A</sub>/<i>M</i>","<i>m</i>/<i>M</i>","<i>νRT</i>"],ans:[2,1],why:"Число молекул N = νNₐ = mNₐ/M. Давление идеального газа p = nkT. Формула m/M — это количество вещества, νRT — это произведение pV."},
+   {type:"rows",kind:"change",q:"Идеальный газ в закрытом сосуде постоянного объёма охладили. Как изменятся плотность газа и его давление?",rows:["Плотность газа","Давление газа"],ans:[3,2],why:"Масса и объём не менялись, поэтому плотность ρ = m/V прежняя. Давление p ~ T при V = const, T уменьшилась, значит p уменьшилось."}
+  ]}
+];
+
+const NEW_TOPICS_11_15 = [
+{ id:"t11", num:11, title:"Закон Кулона, закон Ома, работа и мощность тока", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 11 проверяет расчёты по законам электростатики и постоянного тока: закон Кулона (во сколько раз изменится сила), связь заряда и силы тока, закон Ома, работа и мощность тока. Часть заданий дана графиком. Ответ — число."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Расстояние в квадрате.</b> Расстояние в 2 раза больше — сила Кулона меньше в 4 раза, а не в 2.","<b>Приставки.</b> мА, мкКл, кОм, минуты — переведи в СИ до подстановки.","<b>Работа и мощность.</b> Работа (в джоулях) зависит от времени, мощность (в ваттах) — нет.","<b>Время в секундах.</b> Сила тока — заряд за одну секунду, поэтому минуты и часы переводи в секунды.","<b>Мощность тремя способами.</b> Бери формулу под данные: "+F("<i>UI</i>")+", "+F("<i>I</i>²<i>R</i>")+" или "+F("<i>U</i>²/<i>R</i>")+"."]},
+   {h:"Как читать график"},
+   {ul:["<b>q(t).</b> Сила тока — наклон графика: "+F("<i>I</i> = Δ<i>q</i>/Δ<i>t</i>")+".","<b>I(t).</b> Заряд — площадь под графиком.","<b>I(U).</b> Сопротивление — отношение U/I в любой точке. Наклон графика даёт 1/R, а не R."]},
+   {svg:graph({pts:[[0,0],[2,4],[6,4]],x:[0,7],y:[0,5],dx:1,dy:1,xl:"t, с",yl:"I, А"})},
+   {life:"Ток зарядки телефона 2 А за полчаса переносит заряд 3600 Кл — на графике тока это площадь прямоугольника."}
+  ],
+  cards:[
+   {type:"formula",name:"Закон Кулона",f:"<i>F</i> = <i>k</i>|<i>q</i><sub>1</sub>||<i>q</i><sub>2</sub>|/<i>r</i>²",life:"Два воздушных шарика, натёртых о свитер, отталкиваются. Сблизишь их вдвое — сила отталкивания вырастет примерно в 4 раза."},
+   {type:"formula",name:"Сила тока",f:"<i>I</i> = <i>q</i>/<i>t</i>",life:"Если по проводу зарядки за 10 с прошёл заряд 20 Кл, то сила тока равна 2 А."},
+   {type:"formula",name:"Закон Ома для участка цепи",f:"<i>I</i> = <i>U</i>/<i>R</i>",life:"К USB-порту (5 В) подключили нагрузку 10 Ом — через неё течёт ток 0,5 А."},
+   {type:"formula",name:"Работа электрического тока",f:"<i>A</i> = <i>UIt</i>",life:"Утюг при токе 4 А и напряжении 220 В за 10 минут выполняет работу 528 кДж: 220 · 4 · 600 = 528 000 Дж."},
+   {type:"formula",name:"Мощность электрического тока",f:"<i>P</i> = <i>UI</i> = <i>I</i>²<i>R</i> = <i>U</i>²/<i>R</i>",life:"Фен мощностью 1100 Вт в розетке 220 В потребляет ток 5 А."},
+   {type:"term",term:"Заряд по графику I(t)",def:"Площадь фигуры под графиком силы тока от времени за выбранный промежуток.",life:"Ток зарядки 2 А держится 30 минут — на графике получается прямоугольник, его площадь равна заряду, прошедшему в аккумулятор."},
+   {type:"term",term:"Сопротивление по графику I(U)",def:"Отношение напряжения к силе тока в любой точке графика; чем круче график, тем сопротивление меньше.",life:"У двух резисторов при одном напряжении больше ток там, где график I(U) круче, — у этого резистора сопротивление меньше."}
+  ],
+  qs:[
+   {type:"num",q:"Один из двух точечных зарядов увеличили в 2 раза, а расстояние между зарядами увеличили в 4 раза. Во сколько раз уменьшилась сила кулоновского взаимодействия зарядов?",unit:"раз",ans:8,calc:"4**2/2",why:"F ~ q₁q₂/r². Заряд ×2 увеличивает силу в 2 раза, расстояние ×4 уменьшает её в 16 раз. Итого сила уменьшилась в 16/2 = 8 раз."},
+   {type:"num",q:"На рисунке показан график зависимости заряда, прошедшего через поперечное сечение проводника, от времени. Определите силу тока в проводнике. Ответ дайте в миллиамперах.",svg:graph({pts:[[0,0],[4,12]],x:[0,5],y:[0,14],dx:1,dy:2,xl:"t, с",yl:"q, мКл"}),unit:"мА",ans:3,calc:"12/4",why:"I = Δq/Δt = 12 мКл / 4 с = 3 мА."},
+   {type:"num",q:"К резистору сопротивлением 0,6 кОм приложено напряжение 12 В. Какая сила тока течёт через резистор? Ответ дайте в миллиамперах.",unit:"мА",ans:20,calc:"12/600*1000",why:"R = 600 Ом. I = U/R = 12/600 = 0,02 А = 20 мА."},
+   {type:"num",q:"Два точечных заряда 4 нКл и 5 нКл находятся в вакууме на расстоянии 3 см друг от друга. Найдите модуль силы взаимодействия зарядов. Ответ дайте в микроньютонах.",unit:"мкН",ans:200,calc:"9e9*4e-9*5e-9/0.03**2*1e6",why:"F = k·q₁q₂/r² = 9·10⁹ · 4·10⁻⁹ · 5·10⁻⁹ / (0,03)² = 2·10⁻⁴ Н = 200 мкН."},
+   {type:"num",q:"На рисунке показан график зависимости силы тока в проводнике от времени. Какой заряд прошёл через поперечное сечение проводника за первые 6 с? Ответ дайте в кулонах.",svg:graph({pts:[[0,0],[2,4],[6,4],[8,0]],x:[0,9],y:[0,5],dx:1,dy:1,xl:"t, с",yl:"I, А"}),unit:"Кл",ans:20,calc:"0.5*2*4+4*4",why:"Заряд — площадь под графиком за 6 с: треугольник ½ · 2 · 4 = 4 Кл и прямоугольник 4 · 4 = 16 Кл. Итого 20 Кл."},
+   {type:"num",q:"Чайник включён в сеть напряжением 220 В, сила тока в нём 5 А. Какую работу совершает электрический ток за 2 минуты? Ответ дайте в килоджоулях.",unit:"кДж",ans:132,calc:"220*5*120/1000",why:"t = 120 с. A = UIt = 220 · 5 · 120 = 132 000 Дж = 132 кДж."},
+   {type:"num",q:"Через нагревательный элемент сопротивлением 20 Ом течёт ток 3 А. Какая мощность выделяется на элементе? Ответ дайте в ваттах.",unit:"Вт",ans:180,calc:"3**2*20",why:"P = I²R = 3² · 20 = 180 Вт."},
+   {type:"num",q:"На рисунке показана вольт-амперная характеристика резистора. Определите сопротивление резистора. Ответ дайте в килоомах.",svg:graph({pts:[[0,0],[10,5]],x:[0,12],y:[0,6],dx:2,dy:1,xl:"U, В",yl:"I, мА"}),unit:"кОм",ans:2,calc:"10/(5/1000)/1000",why:"R = U/I = 10 В / 0,005 А = 2000 Ом = 2 кОм."}
+  ]},
+
+{ id:"t12", num:12, title:"Сила Ампера и Лоренца, индукция, катушка", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 12 проверяет простейшие расчёты в магнитном поле: сила Ампера и сила Лоренца (часто в виде «во сколько раз изменится»), магнитный поток, ЭДС индукции, индуктивность и энергия катушки. Ответ — число."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Синус угла.</b> Обе силы зависят от угла между током (скоростью) и линиями индукции: при 90° синус равен 1, при 30° — 0,5.","<b>Квадрат тока.</b> Энергия катушки пропорциональна I²: ток в 3 раза больше — энергия в 9 раз больше.","<b>Единицы.</b> мТл, мГн, мс, см² — в СИ. Помни: 1 см² = 10⁻⁴ м².","<b>ЭДС — это скорость изменения.</b> Важно не само значение потока, а изменение потока за время, взятое по модулю."]},
+   {h:"Как решать «во сколько раз»"},
+   {ul:["<b>Выпиши формулу</b> и рядом подпиши, что и во сколько раз изменилось.","<b>Перемножь множители.</b> Ток ×2 и длина ÷4 дают 2 · ¼ = ½ — сила уменьшилась в 2 раза."]},
+   {life:"Мотор электросамоката работает на силе Ампера: чем больше ток в обмотке, тем сильнее он тянет."}
+  ],
+  cards:[
+   {type:"formula",name:"Сила Ампера",f:"<i>F</i> = <i>BIl</i> sin α",life:"Проводник с током между полюсами магнита отклоняется — так устроен простой электродвигатель."},
+   {type:"formula",name:"Сила Лоренца",f:"<i>F</i> = |<i>q</i>|<i>vB</i> sin α",life:"Электронный пучок в старом ЭЛТ-телевизоре отклоняли магнитным полем катушек."},
+   {type:"formula",name:"Магнитный поток",f:"Φ = <i>BS</i> cos α",life:"Поворачиваешь рамку в магнитном поле — поток через неё меняется от максимума, когда линии идут поперёк рамки, до нуля, когда вдоль."},
+   {type:"formula",name:"Закон электромагнитной индукции",f:"|<i>ε</i><sub>инд</sub>| = |ΔΦ|/Δ<i>t</i>",life:"В беспроводной зарядке переменное поле меняет поток через катушку в телефоне, и в ней возникает ЭДС."},
+   {type:"formula",name:"ЭДС самоиндукции",f:"|<i>ε</i><sub>си</sub>| = <i>L</i>|Δ<i>I</i>|/Δ<i>t</i>",life:"Если резко выдернуть вилку мощного двигателя из розетки, в обмотке возникает большая ЭДС, и проскакивает искра."},
+   {type:"formula",name:"Энергия магнитного поля катушки",f:"<i>W</i> = <i>LI</i>²/2",life:"Дроссель в блоке питания накапливает энергию магнитного поля и сглаживает пульсации тока."},
+   {type:"term",term:"Индуктивность",def:"Характеристика катушки: отношение магнитного потока через катушку к силе тока в ней; единица — генри (Гн).",life:"Катушка с железным сердечником имеет большую индуктивность, поэтому сильнее сопротивляется изменению тока."}
+  ],
+  qs:[
+   {type:"num",q:"Прямой проводник с током расположен перпендикулярно линиям индукции однородного магнитного поля. Силу тока в проводнике увеличили в 2 раза, а длину проводника, находящуюся в поле, уменьшили в 4 раза. Индукцию поля не меняли. Во сколько раз уменьшилась сила Ампера?",unit:"раз",ans:2,calc:"4/2",why:"F = BIl. Ток ×2 и длина ÷4: сила умножается на 2/4 = ½. Сила уменьшилась в 2 раза."},
+   {type:"num",q:"Плоский контур площадью 50 см² находится в однородном магнитном поле с индукцией 0,2 Тл. Угол между вектором индукции и нормалью к плоскости контура равен 60°. Найдите магнитный поток через контур. Ответ дайте в милливеберах.",unit:"мВб",ans:0.5,calc:"0.2*50e-4*0.5*1000",why:"S = 50 см² = 5·10⁻³ м². Φ = BS cos 60° = 0,2 · 5·10⁻³ · 0,5 = 5·10⁻⁴ Вб = 0,5 мВб."},
+   {type:"num",q:"Индуктивность катушки 40 мГн, сила тока в ней 5 А. Найдите энергию магнитного поля катушки. Ответ дайте в джоулях.",unit:"Дж",ans:0.5,calc:"0.5*0.04*5**2",why:"W = LI²/2 = 0,04 · 5² / 2 = 0,5 Дж."},
+   {type:"num",q:"Протон влетает в однородное магнитное поле со скоростью v перпендикулярно линиям индукции. Затем протон влетает в это же поле с той же скоростью под углом 30° к линиям индукции. Во сколько раз сила Лоренца в первом случае больше, чем во втором?",unit:"раз",ans:2,calc:"1/0.5",why:"F = qvB sin α. В первом случае sin 90° = 1, во втором sin 30° = 0,5. Отношение сил 1/0,5 = 2."},
+   {type:"num",q:"Магнитный поток через замкнутый контур равномерно уменьшился с 8 мВб до 2 мВб за 30 мс. Найдите модуль ЭДС индукции в контуре. Ответ дайте в вольтах.",unit:"В",ans:0.2,calc:"(8e-3-2e-3)/30e-3",why:"|ΔΦ| = 8 − 2 = 6 мВб = 6·10⁻³ Вб, Δt = 0,03 с. ε = ΔΦ/Δt = 6·10⁻³ / 0,03 = 0,2 В."},
+   {type:"num",q:"Проводник длиной 20 см с током 5 А расположен в однородном магнитном поле с индукцией 40 мТл под углом 30° к линиям индукции. Найдите модуль силы Ампера. Ответ дайте в миллиньютонах.",unit:"мН",ans:20,calc:"0.04*5*0.2*0.5*1000",why:"F = BIl sin α = 0,04 · 5 · 0,2 · 0,5 = 0,02 Н = 20 мН."},
+   {type:"num",q:"Силу тока в катушке увеличили в 3 раза. Во сколько раз увеличилась энергия магнитного поля катушки?",unit:"раз",ans:9,calc:"3**2",why:"W = LI²/2 пропорциональна I². Ток ×3 — энергия ×9."},
+   {type:"num",q:"Сила тока в катушке индуктивностью 50 мГн равномерно уменьшилась с 5 А до 1 А за 0,2 с. Найдите модуль ЭДС самоиндукции. Ответ дайте в вольтах.",unit:"В",ans:1,calc:"0.05*(5-1)/0.2",why:"|ΔI| = 5 − 1 = 4 А. ε = L·|ΔI|/Δt = 0,05 · 4 / 0,2 = 1 В."}
+  ]},
+
+{ id:"t13", num:13, title:"Электромагнитные колебания, плоское зеркало", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 13 проверяет две темы: электромагнитные колебания в контуре (период и частота по формуле Томсона и по графику) и отражение света в плоском зеркале. Ответ — число."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Корень.</b> Период пропорционален √(LC): индуктивность в 4 раза больше — период в 2 раза больше, а не в 4.","<b>Период и частота обратны.</b> Период вырос в 2 раза — частота упала в 2 раза.","<b>Угол к зеркалу или к нормали.</b> Угол падения отсчитывают от перпендикуляра. Если дан угол с плоскостью зеркала, вычти его из 90°.","<b>Изображение за зеркалом.</b> Оно лежит так же далеко за зеркалом, как предмет перед ним, поэтому между ними — удвоенное расстояние."]},
+   {h:"Как читать график колебаний"},
+   {ul:["<b>Период</b> — время одного полного колебания, например между двумя соседними максимумами.","<b>Частота</b> — "+F("ν = 1/<i>T</i>")+". Период в мкс — частота в МГц.","<b>Ось t в мкс.</b> Период 4 мкс — это 4·10⁻⁶ с."]},
+   {life:"Подходишь в примерочной к зеркалу на 1 м — твоё отражение «стоит» в 1 м за стеклом, а до него от тебя 2 м."}
+  ],
+  cards:[
+   {type:"formula",name:"Формула Томсона",f:"<i>T</i> = 2π√(<i>LC</i>)",life:"Радиоприёмник настраивают на станцию, меняя ёмкость конденсатора в контуре: меняется период, а значит, и частота приёма."},
+   {type:"formula",name:"Связь периода и частоты",f:"ν = 1/<i>T</i>",life:"Радиостанция вещает на частоте 1 МГц — период колебаний в её контуре равен 1 мкс."},
+   {type:"formula",name:"Закон отражения света",f:"<i>α</i> = <i>β</i>",life:"Солнечный зайчик от зеркальца: луч отражается под тем же углом, под каким падает."},
+   {type:"formula",name:"Угол между падающим и отражённым лучами",f:"φ = 2<i>α</i>",life:"Если луч падает на зеркало перпендикулярно, он возвращается назад, и угол между лучами равен нулю."},
+   {type:"term",term:"Изображение в плоском зеркале",def:"Мнимое, прямое, такого же размера; расположено за зеркалом на таком же расстоянии, как предмет перед ним.",life:"Стоишь в 1 м от зеркала в лифте — твой «двойник» виден в 1 м за стеклом."},
+   {type:"term",term:"Колебания в контуре",def:"Периодические изменения заряда конденсатора и тока в катушке: энергия электрического поля переходит в энергию магнитного и обратно.",life:"Колебательный контур в радиопередатчике перекачивает энергию туда-обратно миллионы раз в секунду."},
+   {type:"term",term:"Период по графику",def:"Расстояние по оси времени между двумя соседними одинаковыми точками графика, например максимумами.",life:"На экране осциллографа считают клетки между двумя соседними гребнями волны — это и есть период."}
+  ],
+  qs:[
+   {type:"num",q:"В идеальном колебательном контуре индуктивность катушки увеличили в 16 раз, а ёмкость конденсатора уменьшили в 4 раза. Во сколько раз увеличился период свободных колебаний?",unit:"раз",ans:2,calc:"math.sqrt(16/4)",why:"T = 2π√(LC). Под корнем L·C умножается на 16/4 = 4, поэтому период увеличивается в √4 = 2 раза."},
+   {type:"num",q:"На рисунке показан график зависимости силы тока в идеальном колебательном контуре от времени. Определите период колебаний. Ответ дайте в микросекундах.",svg:graph({pts:[[0,0],[1,7.1],[2,10],[3,7.1],[4,0],[5,-7.1],[6,-10],[7,-7.1],[8,0],[9,7.1],[10,10],[11,7.1],[12,0],[13,-7.1],[14,-10],[15,-7.1],[16,0]],x:[0,16],y:[-10,10],dx:2,dy:5,xl:"t, мкс",yl:"I, мА"}),unit:"мкс",ans:8,calc:"10-2",why:"Период — время одного полного колебания: график повторяется через 8 мкс (например, от одного максимума при t = 2 мкс до следующего при t = 10 мкс)."},
+   {type:"num",q:"Луч света падает на плоское зеркало. Угол между падающим лучом и поверхностью зеркала равен 20°. Чему равен угол между падающим и отражённым лучами? Ответ дайте в градусах.",unit:"°",ans:140,calc:"2*(90-20)",why:"Угол падения отсчитывают от перпендикуляра: α = 90° − 20° = 70°. Угол отражения тоже 70°, угол между лучами 2α = 140°."},
+   {type:"num",q:"К конденсатору идеального колебательного контура параллельно подключили ещё три таких же конденсатора. Во сколько раз уменьшилась частота свободных колебаний в контуре?",unit:"раз",ans:2,calc:"math.sqrt(4)",why:"При параллельном соединении ёмкости складываются: C становится в 4 раза больше. Период растёт в √4 = 2 раза, частота падает в 2 раза."},
+   {type:"num",q:"Предмет находится на расстоянии 40 см от плоского зеркала. Предмет придвинули к зеркалу на 15 см. Каким стало расстояние между предметом и его изображением? Ответ дайте в сантиметрах.",unit:"см",ans:50,calc:"2*(40-15)",why:"Новое расстояние до зеркала 40 − 15 = 25 см. Изображение за зеркалом на таком же расстоянии, поэтому между предметом и изображением 2 · 25 = 50 см."},
+   {type:"num",q:"На рисунке показан график зависимости напряжения на конденсаторе идеального колебательного контура от времени. Определите частоту колебаний. Ответ дайте в килогерцах.",svg:graph({pts:[[0,6],[0.5,4.2],[1,0],[1.5,-4.2],[2,-6],[2.5,-4.2],[3,0],[3.5,4.2],[4,6],[4.5,4.2],[5,0],[5.5,-4.2],[6,-6],[6.5,-4.2],[7,0],[7.5,4.2],[8,6]],x:[0,8],y:[-6,6],dx:1,dy:2,xl:"t, мкс",yl:"U, В"}),unit:"кГц",ans:250,calc:"1/(4e-6)/1000",why:"Соседние максимумы при t = 0 и t = 4 мкс: T = 4 мкс = 4·10⁻⁶ с. ν = 1/T = 250 000 Гц = 250 кГц."},
+   {type:"num",q:"Индуктивность катушки идеального колебательного контура 1 мГн, ёмкость конденсатора 4 нФ. Найдите период свободных колебаний в контуре. Примите π = 3,14. Ответ дайте в микросекундах.",unit:"мкс",ans:12.56,calc:"2*3.14*math.sqrt(1e-3*4e-9)*1e6",why:"LC = 10⁻³ · 4·10⁻⁹ = 4·10⁻¹², √(LC) = 2·10⁻⁶ с. T = 2π√(LC) = 2 · 3,14 · 2·10⁻⁶ = 12,56·10⁻⁶ с = 12,56 мкс."},
+   {type:"num",q:"Точечный источник света находится на расстоянии 30 см от плоского зеркала. Зеркало отодвинули от источника на 10 см (источник не двигали). Каким стало расстояние между источником и его изображением? Ответ дайте в сантиметрах.",unit:"см",ans:80,calc:"2*(30+10)",why:"Расстояние от источника до зеркала стало 30 + 10 = 40 см. Изображение на таком же расстоянии за зеркалом, поэтому между источником и изображением 2 · 40 = 80 см."}
+  ]},
+
+{ id:"t14", num:14, title:"Анализ электрических процессов: верные утверждения", fmt:"выбор утверждений · 2 балла",
+  lesson:[
+   {p:"Задание 14 даёт описание процесса или график и пять утверждений. Нужно выбрать все верные (их 2 или 3). Проверяются цепи постоянного тока, конденсаторы, магнитное поле, электромагнитная индукция и колебательный контур."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Проверяй каждое утверждение отдельно.</b> «Похоже на правду» — не аргумент: подставь числа или выпиши формулу.","<b>Что остаётся постоянным.</b> Конденсатор отключён от источника — постоянен заряд; подключён — постоянно напряжение.","<b>Последовательно и параллельно.</b> При последовательном соединении одинакова сила тока, при параллельном — напряжение.","<b>Индукционный ток есть, только пока поток меняется.</b> Неподвижный магнит в катушке тока не создаёт.","<b>Слова «только» и «всегда».</b> Достаточно одного примера, где это не так, — и утверждение неверно."]},
+   {h:"Как читать график"},
+   {ul:["<b>Колебательный контур.</b> Заряд конденсатора максимален — ток равен нулю; заряд равен нулю — ток максимален.","<b>I(U).</b> Прямая через начало координат — закон Ома, сопротивление R = U/I.","<b>Числа с графика.</b> Прочитай точку графика и сразу проверь утверждение: например, мощность — это U · I в этой точке."]},
+   {life:"Динамический микрофон работает на индукции: пока мембрана с катушкой колеблется в поле магнита, ток есть, остановилась — тока нет."}
+  ],
+  cards:[
+   {type:"formula",name:"Последовательное соединение",f:"<i>R</i> = <i>R</i><sub>1</sub> + <i>R</i><sub>2</sub>, <i>I</i><sub>1</sub> = <i>I</i><sub>2</sub>",life:"Лампочки в старой ёлочной гирлянде включены друг за другом: через все течёт один и тот же ток."},
+   {type:"formula",name:"Параллельное соединение",f:"<i>U</i><sub>1</sub> = <i>U</i><sub>2</sub>, 1/<i>R</i> = 1/<i>R</i><sub>1</sub> + 1/<i>R</i><sub>2</sub>",life:"Приборы в розетках квартиры включены параллельно: на каждом одинаковое напряжение 220 В."},
+   {type:"formula",name:"Ёмкость плоского конденсатора",f:"<i>C</i> = ε<sub>0</sub>ε<i>S</i>/<i>d</i>",life:"Палец у сенсорного экрана меняет ёмкость в точке касания — так телефон находит, куда ты нажал."},
+   {type:"formula",name:"Энергия конденсатора",f:"<i>W</i> = <i>q</i>²/(2<i>C</i>)",life:"Вспышка фотоаппарата питается от заряженного конденсатора, который за долю секунды отдаёт накопленную энергию."},
+   {type:"formula",name:"Радиус траектории частицы в магнитном поле",f:"<i>R</i> = <i>mv</i>/(|<i>q</i>|<i>B</i>)",life:"В масс-спектрометре по радиусу траектории частицы определяют её массу."},
+   {type:"term",term:"Правило Ленца",def:"Индукционный ток направлен так, что его магнитное поле противодействует изменению магнитного потока, вызвавшему этот ток.",life:"Магнит падает сквозь медную трубку медленнее, чем сквозь пластиковую: индукционные токи в меди его тормозят."},
+   {type:"term",term:"Энергия в колебательном контуре",def:"Полная энергия контура постоянна: энергия электрического поля конденсатора переходит в энергию магнитного поля катушки и обратно.",life:"Аналог — качели без трения: в крайней точке вся энергия потенциальная (как у заряженного конденсатора), в нижней — кинетическая (как у катушки с током)."}
+  ],
+  qs:[
+   {type:"multi",q:"Два резистора сопротивлениями 10 Ом и 20 Ом соединены последовательно и подключены к идеальному источнику постоянного напряжения 6 В. Выберите все верные утверждения.",opts:["Общее сопротивление цепи равно 30 Ом.","Напряжение на резисторе 20 Ом равно 2 В.","Сила тока в цепи равна 0,6 А.","Мощность тока в резисторе 20 Ом в 2 раза больше, чем в резисторе 10 Ом.","Напряжения на резисторах одинаковы."],ans:[0,3],why:"R = 10 + 20 = 30 Ом, I = 6/30 = 0,2 А (не 0,6 А). Напряжение на 20 Ом равно 0,2 · 20 = 4 В (не 2 В), на 10 Ом — 2 В, значит напряжения разные. Ток один, P = I²R, поэтому мощность на большем сопротивлении в 2 раза больше."},
+   {type:"multi",q:"На рисунке показан график зависимости силы тока в проводнике от напряжения на его концах. Выберите все верные утверждения.",svg:graph({pts:[[0,0],[12,3]],x:[0,14],y:[0,4],dx:2,dy:1,xl:"U, В",yl:"I, А"}),opts:["При напряжении 6 В сила тока в проводнике равна 1 А.","Сопротивление проводника равно 4 Ом.","Сопротивление проводника увеличивается с ростом напряжения.","При напряжении 8 В мощность тока в проводнике равна 16 Вт.","При силе тока 3 А напряжение на проводнике равно 12 В."],ans:[1,3,4],why:"График — прямая, R = U/I = 12/3 = 4 Ом и не меняется. При 6 В ток 1,5 А (не 1 А). При 8 В ток 2 А, P = UI = 16 Вт. Точка (12 В; 3 А) лежит на графике."},
+   {type:"multi",q:"Плоский воздушный конденсатор зарядили и отключили от источника, а затем увеличили расстояние между его обкладками. Выберите все верные утверждения.",opts:["Ёмкость конденсатора увеличилась.","Заряд на обкладках конденсатора не изменился.","Напряжённость электрического поля между обкладками уменьшилась.","Напряжение между обкладками конденсатора увеличилось.","Энергия электрического поля конденсатора уменьшилась."],ans:[1,3],why:"Конденсатор отключён, поэтому заряд q постоянен. C = ε₀S/d уменьшилась, U = q/C выросло, W = q²/(2C) выросла. Напряжённость E = q/(ε₀S) не изменилась."},
+   {type:"multi",q:"На рисунке показан график зависимости заряда одной из обкладок конденсатора идеального колебательного контура от времени. Выберите все верные утверждения.",svg:graph({pts:[[0,8],[1,5.66],[2,0],[3,-5.66],[4,-8],[5,-5.66],[6,0],[7,5.66],[8,8]],x:[0,9],y:[-8,8],dx:1,dy:2,xl:"t, мкс",yl:"q, нКл"}),opts:["Период колебаний заряда конденсатора равен 8 мкс.","В момент времени t = 2 мкс энергия электрического поля конденсатора максимальна.","В момент времени t = 4 мкс сила тока в катушке максимальна.","Частота колебаний равна 8 кГц.","В момент времени t = 2 мкс энергия магнитного поля катушки максимальна."],ans:[0,4],why:"Соседние максимумы при t = 0 и t = 8 мкс: T = 8 мкс, частота 1/T = 125 кГц (не 8 кГц). При t = 2 мкс заряд равен нулю: вся энергия в катушке, ток максимален. При t = 4 мкс заряд максимален по модулю, ток равен нулю."},
+   {type:"multi",q:"Полосовой магнит вдвигают в замкнутую катушку, затем выдвигают из неё. Катушка соединена с гальванометром. Выберите все верные утверждения.",opts:["Индукционный ток возникает только при вдвигании магнита, при выдвигании тока нет.","Пока магнит движется относительно катушки, в ней возникает ЭДС индукции.","Чем быстрее движется магнит, тем больше ЭДС индукции.","При вдвигании и выдвигании магнита индукционный ток направлен одинаково.","Если магнит неподвижен внутри катушки, в ней течёт постоянный индукционный ток."],ans:[1,2],why:"ЭДС возникает при любом изменении потока — и при вдвигании, и при выдвигании. ε = ΔΦ/Δt: чем быстрее движется магнит, тем она больше. По правилу Ленца направления тока в этих случаях противоположны. Если магнит неподвижен, поток не меняется и тока нет."},
+   {type:"multi",q:"Протон влетает в однородное магнитное поле перпендикулярно линиям индукции. Силой тяжести можно пренебречь. Выберите все верные утверждения.",opts:["Сила Лоренца направлена вдоль вектора скорости протона.","Траектория протона в магнитном поле — окружность.","Период обращения протона не зависит от его скорости.","При увеличении скорости протона в 2 раза радиус окружности уменьшится в 2 раза.","Кинетическая энергия протона при движении не изменяется."],ans:[1,2,4],why:"Сила Лоренца перпендикулярна скорости и работы не совершает: скорость и энергия постоянны, траектория — окружность. R = mv/(qB) растёт с v (при v ×2 радиус увеличится в 2 раза), а T = 2πm/(qB) от скорости не зависит."}
+  ]},
+
+{ id:"t15", num:15, title:"Как изменятся величины в цепях и полях", fmt:"две цифры · 2 балла",
+  lesson:[
+   {p:"Задание 15 проверяет, как изменятся две величины при изменении одного параметра. В ответе две цифры: 1 — увеличится, 2 — уменьшится, 3 — не изменится; цифры могут повторяться. Второй тип — соответствие между величинами и формулами."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Сначала — что постоянно.</b> Источник подключён — постоянно напряжение; конденсатор отключён — постоянен заряд.","<b>Одна величина — одна формула.</b> Выпиши формулу для каждой величины и смотри, что в ней меняется.","<b>Порядок цифр.</b> Цифры идут в том же порядке, что и величины в условии.","<b>«Не изменится» — тоже ответ.</b> Ёмкость конденсатора не зависит от заряда и напряжения, индуктивность — от тока.","<b>Сомневаешься — подставь числа.</b> Возьми сопротивление 2 Ом вместо 1 Ом и посчитай обе величины до и после."]},
+   {h:"От чего что зависит"},
+   {ul:["<b>Ёмкость.</b> Площадь пластин, расстояние между ними, диэлектрик.","<b>Сопротивление проводника.</b> Материал, длина, площадь сечения.","<b>Период контура.</b> Только индуктивность и ёмкость.","<b>Радиус траектории частицы.</b> Масса, скорость, заряд и индукция; период обращения от скорости не зависит."]},
+   {life:"Ручкой старого радиоприёмника меняют ёмкость конденсатора в контуре: меняется период колебаний, и приёмник ловит другую станцию."}
+  ],
+  cards:[
+   {type:"formula",name:"Ёмкость плоского конденсатора",f:"<i>C</i> = ε<sub>0</sub>ε<i>S</i>/<i>d</i>",life:"Поворачиваешь ручку старого радиоприёмника — меняется площадь перекрытия пластин переменного конденсатора, а с ней и ёмкость."},
+   {type:"formula",name:"Заряд, напряжение и ёмкость",f:"<i>C</i> = <i>q</i>/<i>U</i>",life:"Чем больше ёмкость конденсатора, тем больший заряд он накопит при том же напряжении зарядки."},
+   {type:"formula",name:"Энергия конденсатора",f:"<i>W</i> = <i>q</i>²/(2<i>C</i>) = <i>CU</i>²/2",life:"Вспышка фотоаппарата: чем выше напряжение зарядки конденсатора, тем больше энергия вспышки."},
+   {type:"formula",name:"Сопротивление проводника",f:"<i>R</i> = ρ<i>l</i>/<i>S</i>",life:"Тонкий и длинный провод удлинителя греется сильнее, чем короткий и толстый, — его сопротивление больше."},
+   {type:"formula",name:"Период колебаний в контуре",f:"<i>T</i> = 2π√(<i>LC</i>)",life:"Настройка радио: вращаешь ручку, меняется ёмкость, меняется период колебаний — и приёмник ловит другую частоту."},
+   {type:"formula",name:"Радиус траектории в магнитном поле",f:"<i>R</i> = <i>mv</i>/(|<i>q</i>|<i>B</i>)",life:"Быстрые частицы в ускорителе чертят окружность большего радиуса, чем медленные."},
+   {type:"formula",name:"Период обращения частицы",f:"<i>T</i> = 2π<i>m</i>/(|<i>q</i>|<i>B</i>)",life:"В циклотроне частицы разгоняются, а время одного оборота остаётся тем же — на этом держится его работа."}
+  ],
+  qs:[
+   {type:"rows",kind:"change",q:"Плоский воздушный конденсатор зарядили и отключили от источника. Затем пространство между обкладками заполнили диэлектриком с ε > 1. Как изменятся напряжение между обкладками конденсатора и энергия его электрического поля?",rows:["Напряжение между обкладками","Энергия электрического поля конденсатора"],ans:[2,2],why:"Заряд q постоянен, ёмкость растёт (C ~ ε). U = q/C уменьшается, W = q²/(2C) тоже уменьшается."},
+   {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта. К каждой позиции первого столбца подберите соответствующую позицию второго.",rows:["Мощность электрического тока","Энергия магнитного поля катушки с током"],choices:["<i>UIt</i>","<i>UI</i>","<i>LI</i>²/2","<i>BIl</i>"],ans:[2,3],why:"P = UI. W = LI²/2. Формула UIt — это работа тока, BIl — сила Ампера."},
+   {type:"rows",kind:"change",q:"К резистору, подключённому к идеальному источнику постоянного напряжения, параллельно подключили такой же резистор. Как изменятся общее сопротивление цепи и мощность тока, потребляемая от источника?",rows:["Общее сопротивление цепи","Мощность тока, потребляемая от источника"],ans:[2,1],why:"Два одинаковых резистора параллельно: R_общ = R/2, сопротивление уменьшилось. P = U²/R_общ при постоянном U — мощность увеличилась (в 2 раза)."},
+   {type:"rows",kind:"change",q:"Проволоку, подключённую к источнику постоянного напряжения, равномерно вытянули: её длина увеличилась, а площадь поперечного сечения уменьшилась (материал и температура те же). Как изменятся сопротивление проволоки и сила тока в ней?",rows:["Сопротивление проволоки","Сила тока в проволоке"],ans:[1,2],why:"R = ρl/S: длина больше, сечение меньше — сопротивление увеличилось. I = U/R при постоянном U — сила тока уменьшилась."},
+   {type:"rows",kind:"change",q:"В катушку колебательного контура вдвинули железный сердечник, при этом индуктивность катушки увеличилась. Как изменятся период свободных колебаний и длина электромагнитной волны, излучаемой контуром?",rows:["Период свободных колебаний","Длина излучаемой волны"],ans:[1,1],why:"T = 2π√(LC): индуктивность растёт — период растёт. λ = cT: период больше — длина волны тоже больше."},
+   {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта. К каждой позиции первого столбца подберите соответствующую позицию второго.",rows:["Сила Ампера (проводник перпендикулярен линиям индукции)","Период свободных колебаний в идеальном контуре"],choices:["2π√(<i>LC</i>)","<i>qvB</i>","<i>BIl</i>","1/(2π√(<i>LC</i>))"],ans:[3,1],why:"F = BIl; T = 2π√(LC). Формула 4 — частота колебаний, qvB — сила Лоренца."},
+   {type:"rows",kind:"change",q:"Электрон движется в однородном магнитном поле по окружности (скорость перпендикулярна линиям индукции). Скорость электрона увеличили, индукцию поля не меняли. Как изменятся радиус траектории и период обращения электрона?",rows:["Радиус траектории","Период обращения"],ans:[1,3],why:"R = mv/(eB): скорость растёт — радиус растёт. T = 2πm/(eB) от скорости не зависит, период не изменится."},
+   {type:"rows",kind:"change",q:"Силу тока в катушке без сердечника уменьшили. Как изменятся энергия магнитного поля катушки и её индуктивность?",rows:["Энергия магнитного поля катушки","Индуктивность катушки"],ans:[2,3],why:"W = LI²/2: ток меньше — энергия меньше. Индуктивность зависит от размеров и числа витков катушки, но не от тока, поэтому не изменится."}
+  ]}
+];
+
+const NEW_TOPICS_16_18 = [
+{ id:"t16", num:16, title:"Строение атома и ядра, радиоактивный распад", fmt:"ответ числом · 1 балл",
+  lesson:[
+   {p:"Задание 16 проверяет строение атома и ядра, радиоактивный распад и ядерные реакции. Нужно посчитать число частиц или найти массовое либо зарядовое число. Ответ — число."},
+   {h:"Правила для распадов и реакций"},
+   {ul:["<b>α-распад:</b> массовое число A уменьшается на 4, зарядовое Z — на 2.","<b>β⁻-распад:</b> нейтрон становится протоном. A не меняется, Z растёт на 1.","<b>Любая реакция:</b> сумма A слева равна сумме A справа, то же для Z."]},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Протоны и нейтроны.</b> Нижнее число в записи ядра — протоны (Z), верхнее — все нуклоны (A). Нейтронов будет A − Z.","<b>Полураспад — не половина времени.</b> За два периода остаётся 1/4 ядер, а не ноль. Сначала найди число периодов n = t/T.","<b>Осталось или распалось?</b> Прочитай вопрос: нужно N (осталось) или N₀ − N (распалось).","<b>Ионы.</b> Электронов в ионе не Z, а Z минус потерянные (или плюс присоединённые)."]},
+   {h:"Как читать график N(t)"},
+   {ul:["Период полураспада — время, за которое число нераспавшихся ядер падает вдвое."]},
+   {life:"Радиоактивный йод-131, который используют в медицине, теряет половину ядер за 8 суток, поэтому через месяц от первоначальной дозы остаётся лишь несколько процентов."}
+  ],
+  cards:[
+   {type:"formula",name:"Закон радиоактивного распада",f:"<i>N</i> = <i>N</i><sub>0</sub> · 2<sup>−<i>t</i>/<i>T</i></sup>",life:"Если период полураспада 8 суток, то за 24 суток (3 периода) от дозы остаётся 1/8."},
+   {type:"formula",name:"Число нейтронов в ядре",f:"<i>N</i><sub>нейтр</sub> = <i>A</i> − <i>Z</i>",life:"У ядра углерода-14 (A = 14, Z = 6) нейтронов 14 − 6 = 8; по распаду таких ядер определяют возраст древних находок."},
+   {type:"term",term:"Массовое и зарядовое числа",def:"Массовое число A — это число нуклонов в ядре, зарядовое число Z — число протонов; в нейтральном атоме Z равно числу электронов.",life:"Номер элемента в таблице Менделеева — это Z: в атоме железа 26 протонов и в нейтральном атоме 26 электронов."},
+   {type:"term",term:"Период полураспада",def:"Время, за которое распадается половина имеющихся радиоактивных ядер.",life:"У радона из плохо проветриваемого подвала период полураспада около 4 суток: через 4 суток его ядер остаётся вдвое меньше."},
+   {type:"term",term:"α-распад",def:"Распад, при котором ядро испускает ядро гелия ⁴₂He: массовое число уменьшается на 4, зарядовое — на 2.",life:"В дымовом датчике пожарной сигнализации немного америция-241 испускает α-частицы, которые ионизируют воздух между пластинами."},
+   {type:"term",term:"β⁻-распад",def:"Распад, при котором нейтрон ядра превращается в протон с испусканием электрона: массовое число не меняется, зарядовое растёт на 1.",life:"Радиоактивный калий-40 в бананах в основном распадается с испусканием электрона и превращается в кальций-40: Z растёт с 19 до 20."},
+   {type:"term",term:"Сохранение чисел в ядерной реакции",def:"Сумма массовых чисел и сумма зарядовых чисел до реакции равны соответствующим суммам после неё.",life:"В реакторе атомной станции ядро урана-235 делится на осколки и нейтроны, но число нуклонов и суммарный заряд при этом не меняются."}
+  ],
+  qs:[
+   {type:"num",q:"Атом кальция ⁴⁰₂₀Ca потерял два электрона и стал ионом Ca²⁺. Сколько электронов содержит этот ион?",unit:"электронов",ans:18,calc:"20-2",why:"В нейтральном атоме электронов столько же, сколько протонов: Z = 20. Два электрона потеряны: 20 − 2 = 18."},
+   {type:"num",q:"Ядро тория ²³⁴₉₀Th (Z = 90) испытывает электронный β-распад. Каков заряд Z образовавшегося ядра (в единицах элементарного заряда)?",unit:"",ans:91,calc:"90+1",why:"При β⁻-распаде нейтрон превращается в протон: Z растёт на 1. Получаем 90 + 1 = 91 (ядро протактиния)."},
+   {type:"num",q:"В образце содержится 1600 ядер радиоактивного изотопа с периодом полураспада 4 суток. Сколько ядер этого изотопа останется нераспавшимися через 12 суток?",unit:"ядер",ans:200,calc:"1600/2**(12/4)",why:"Число периодов n = 12/4 = 3. N = N₀/2ⁿ = 1600/8 = 200."},
+   {type:"num",q:"На рисунке показана зависимость числа N нераспавшихся ядер радиоактивного изотопа от времени t. Определите период полураспада этого изотопа.",svg:graph({pts:[[0,80],[8,40],[16,20],[24,10],[32,5]],x:[0,32],y:[0,80],dx:4,dy:10,xl:"t, с",yl:"N, 10⁶"}),unit:"с",ans:8,calc:"8-0",why:"Сначала N₀ = 80·10⁶. Вдвое меньше, 40·10⁶, число ядер становится при t = 8 с. Значит, T = 8 с."},
+   {type:"num",q:"Масса образца радиоактивного изотопа 160 мг, период полураспада 5 суток. Сколько миллиграммов этого изотопа распадётся за 15 суток?",unit:"мг",ans:140,calc:"160-160/2**(15/5)",why:"За 15 суток проходит n = 15/5 = 3 периода, остаётся 160/8 = 20 мг. Распадётся 160 − 20 = 140 мг."},
+   {type:"num",q:"Ядро азота ¹⁴₇N поглощает α-частицу ⁴₂He и испускает протон ¹₁H, превращаясь в ядро X: ¹⁴₇N + ⁴₂He → X + ¹₁H. Чему равно массовое число ядра X?",unit:"",ans:17,calc:"14+4-1",why:"Сумма массовых чисел сохраняется: 14 + 4 = A + 1, откуда A = 17. Зарядовое число Z = 7 + 2 − 1 = 8, это кислород ¹⁷₈O."},
+   {type:"num",q:"При делении ядра урана-235 нейтроном идёт реакция ²³⁵₉₂U + ¹₀n → ¹⁴¹₅₆Ba + ⁹²₃₆Kr + k·¹₀n. Сколько нейтронов k образуется в этой реакции?",unit:"нейтронов",ans:3,calc:"235+1-141-92",why:"Сумма массовых чисел слева 235 + 1 = 236, справа 141 + 92 + k. Из 236 = 233 + k получаем k = 3. Заряды сошлись: 92 = 56 + 36."},
+   {type:"num",q:"Ядро ²³⁸₉₂U испытывает два α-распада и один β⁻-распад. Сколько нейтронов содержится в образовавшемся ядре?",unit:"нейтронов",ans:141,calc:"(238-2*4)-(92-2*2+1)",why:"Массовое число: 238 − 2·4 = 230. Заряд: 92 − 2·2 + 1 = 89. Нейтронов: A − Z = 230 − 89 = 141."}
+  ]},
+
+{ id:"t17", num:17, title:"Фотоэффект и энергетические уровни", fmt:"две цифры · 2 балла",
+  lesson:[
+   {p:"Задание 17 — на соответствие. Бывает два вида: как меняются величины при фотоэффекте и какая энергия у фотона при переходе атома между уровнями. Ответ — две цифры подряд."},
+   {h:"Что от чего зависит при фотоэффекте"},
+   {ul:["<b>От частоты света:</b> энергия фотона, максимальная кинетическая энергия электронов, запирающее напряжение.","<b>От числа фотонов (интенсивности):</b> число фотоэлектронов в секунду и фототок насыщения.","<b>От металла:</b> работа выхода и красная граница. Свет их не меняет."]},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Мощность та же, частота выросла.</b> Фотонов в секунду стало меньше: "+F("<i>N</i> = <i>P</i>/(<i>hν</i>)")+".","<b>Выше частота — не больше электронов.</b> Если число фотонов в секунду то же, число фотоэлектронов не изменилось.","<b>Вниз — излучение, вверх — поглощение.</b> Энергия фотона — модуль разности уровней. Уровни отрицательные, считай со знаками.","<b>Длина волны наоборот.</b> Длина волны больше — частота и энергия фотона меньше.","<b>Красная граница в длинах волн.</b> Работа выхода больше — минимальная частота больше, а предельная длина волны меньше."]},
+   {life:"В фотоэлементе чем ярче свет, тем больше ток, а скорость вылетающих электронов задаёт только цвет света."}
+  ],
+  cards:[
+   {type:"formula",name:"Энергия фотона",f:"<i>E</i> = <i>hν</i> = <i>hc</i>/<i>λ</i>",life:"Фотон ультрафиолета энергичнее фотона красного света, поэтому загар вызывает именно ультрафиолет, а красная лампа нет."},
+   {type:"formula",name:"Уравнение Эйнштейна для фотоэффекта",f:"<i>hν</i> = <i>A</i><sub>вых</sub> + <i>E</i><sub>к.max</sub>",life:"Энергия фотона делится: часть тратится на выход электрона из металла, остальное уходит в его скорость."},
+   {type:"formula",name:"Красная граница фотоэффекта",f:"<i>ν</i><sub>min</sub> = <i>A</i><sub>вых</sub>/<i>h</i>",life:"Если фотон слабее работы выхода, то хоть залей металл красным светом, электроны не вылетят, как мяч, брошенный слишком слабо, не перелетит забор."},
+   {type:"formula",name:"Запирающее напряжение",f:"<i>eU</i><sub>з</sub> = <i>E</i><sub>к.max</sub>",life:"Запирающее напряжение работает как встречный ветер, который останавливает даже самого быстрого велосипедиста."},
+   {type:"formula",name:"Энергия фотона при переходе атома",f:"<i>hν</i> = |<i>E</i><sub>m</sub> − <i>E</i><sub>n</sub>|",life:"Светодиод в гирлянде излучает фотоны строго определённой энергии, поэтому светит одним цветом."},
+   {type:"term",term:"Фототок насыщения",def:"Наибольшая сила тока в фотоэлементе при данном свете, когда все вылетевшие за секунду электроны достигают анода; он пропорционален числу падающих фотонов.",life:"Заменил тусклую лампу яркой: фототок вырос, потому что фотонов стало больше, а энергия каждого фотона осталась прежней."},
+   {type:"term",term:"Излучение и поглощение света атомом",def:"Атом излучает фотон при переходе на более низкий энергетический уровень и поглощает фотон при переходе на более высокий.",life:"Неоновая реклама светится красно-оранжевым светом: возбуждённые атомы неона переходят на нижние уровни и излучают фотоны."}
+  ],
+  qs:[
+   {type:"rows",kind:"change",q:"На металлическую пластину падает монохроматический свет, вызывающий фотоэффект. Частоту света увеличили, число фотонов, падающих на пластину за 1 с, не изменилось. Как изменятся максимальная кинетическая энергия фотоэлектронов и число фотоэлектронов, вылетающих за 1 с?",rows:["Максимальная кинетическая энергия фотоэлектронов","Число фотоэлектронов, вылетающих за 1 с"],ans:[1,3],why:"hν = A + Eк: частота выросла, работа выхода та же, значит Eк растёт. Фотонов в секунду столько же, поэтому и электронов в секунду столько же."},
+   {type:"rows",kind:"change",q:"Интенсивность монохроматического света, падающего на пластину, увеличили в 2 раза. Частота света не изменилась, фотоэффект наблюдается. Как изменятся запирающее напряжение и фототок насыщения?",rows:["Запирающее напряжение","Фототок насыщения"],ans:[3,1],why:"eUз = hν − A: частота та же, поэтому запирающее напряжение не меняется. Фотонов стало вдвое больше, значит, фотоэлектронов и фототок насыщения больше."},
+   {type:"rows",kind:"match",q:"Уровни энергии атома: E₁ = −13,6 эВ (основное состояние), E₂ = −3,4 эВ, E₃ = −1,5 эВ. Установите соответствие между процессами и энергиями фотонов, которые излучаются или поглощаются.",rows:["Излучение при переходе с уровня E₃ на уровень E₂","Поглощение при переходе с уровня E₁ на уровень E₂"],choices:["10,2 эВ","12,1 эВ","1,9 эВ","13,6 эВ"],ans:[3,1],why:"Излучение E₃ → E₂: −1,5 − (−3,4) = 1,9 эВ. Поглощение E₁ → E₂: −3,4 − (−13,6) = 10,2 эВ."},
+   {type:"rows",kind:"change",q:"Длину волны света, облучающего металлическую пластину, увеличили. Фотоэффект продолжает наблюдаться, число фотонов за 1 с не изменилось. Как изменятся энергия фотона и запирающее напряжение?",rows:["Энергия фотона","Запирающее напряжение"],ans:[2,2],why:"E = hc/λ: длина волны больше, значит, энергия фотона меньше. eUз = E − A: энергия фотона меньше при той же работе выхода, значит, запирающее напряжение меньше."},
+   {type:"rows",kind:"change",q:"Пластину из одного металла заменили пластиной из другого металла с большей работой выхода. Свет прежний, фотоэффект наблюдается. Как изменятся максимальная кинетическая энергия фотоэлектронов и минимальная частота света, при которой возможен фотоэффект?",rows:["Максимальная кинетическая энергия фотоэлектронов","Минимальная частота света, при которой возможен фотоэффект"],ans:[2,1],why:"Eк = hν − A: работа выхода больше, значит, Eк меньше. νmin = A/h: работа выхода больше, значит, минимальная частота больше."},
+   {type:"rows",kind:"match",q:"Уровни энергии атома: E₁ = −8 эВ, E₂ = −3 эВ, E₃ = −1 эВ. Установите соответствие между переходами атома и процессами, которые при них происходят.",rows:["Переход с уровня E₂ на уровень E₁","Переход с уровня E₂ на уровень E₃"],choices:["излучение фотона с энергией 5 эВ","поглощение фотона с энергией 5 эВ","излучение фотона с энергией 2 эВ","поглощение фотона с энергией 2 эВ"],ans:[1,4],why:"E₂ → E₁ идёт вниз, значит, фотон излучается: −3 − (−8) = 5 эВ. E₂ → E₃ идёт вверх, значит, фотон поглощается: −1 − (−3) = 2 эВ."},
+   {type:"rows",kind:"change",q:"Частоту света, облучающего металлическую пластину, увеличили, мощность светового потока оставили прежней. Фотоэффект наблюдается и до, и после. Доля фотонов, выбивающих электроны, не меняется. Как изменятся энергия фотона и фототок насыщения?",rows:["Энергия фотона","Фототок насыщения"],ans:[1,2],why:"E = hν растёт. Мощность P = N·hν прежняя, значит, число фотонов в секунду N = P/(hν) уменьшилось. Фотоэлектронов в секунду меньше, и фототок насыщения меньше."},
+   {type:"rows",kind:"match",q:"Уровни энергии атома: E₁ = −9 эВ (основное состояние), E₂ = −4 эВ, E₃ = −2 эВ. Установите соответствие между физическими величинами и их значениями.",rows:["Наименьшая энергия фотона, который может поглотить атом в основном состоянии E₁","Наибольшая энергия фотона, который может излучить атом, находящийся на уровне E₃"],choices:["2 эВ","5 эВ","7 эВ","9 эВ"],ans:[2,3],why:"Из E₁ атом может уйти на E₂ (−4 − (−9) = 5 эВ) или на E₃ (7 эВ), наименьшая энергия 5 эВ. С E₃ атом может перейти на E₂ (2 эВ) или на E₁ (−2 − (−9) = 7 эВ), наибольшая энергия 7 эВ."}
+  ]},
+
+{ id:"t18", num:18, title:"Верные утверждения по всем разделам", fmt:"выбор утверждений · 2 балла",
+  lesson:[
+   {p:"Задание 18 — пять утверждений по разным разделам: 1-е — механика, 2-е — молекулярная физика, 3-е и 4-е — электродинамика, 5-е — квантовая физика. Верных два или три. Ответ — номера верных утверждений."},
+   {h:"Ловушки ЕГЭ"},
+   {ul:["<b>Слова «всегда», «любой», «только».</b> Достаточно одного исключения, и утверждение неверно.","<b>Зависит или не зависит.</b> Сила трения скольжения не зависит от площади, период маятника — от массы груза, энергия фотоэлектронов — от интенсивности света.","<b>Степень в формуле.</b> Кинетическая энергия растёт как v², энергия пружины — как x², мощность тока — как I². Не в первой степени.","<b>Направление.</b> Излучение — переход вниз, β⁻-распад увеличивает Z, сила Лоренца перпендикулярна скорости."]},
+   {h:"Как решать"},
+   {ul:["Проверяй каждое утверждение отдельно, не сравнивай их друг с другом.","Сомневаешься — вспомни формулу и посмотри, от чего величина зависит.","В газовых законах температура только в кельвинах: давление пропорционально T, а не t в градусах Цельсия."]},
+   {life:"На кухне вода в кастрюле не становится горячее 100 °C, сколько ни увеличивай огонь: температура кипения постоянна, а лишняя энергия уходит на образование пара."}
+  ],
+  cards:[
+   {type:"term",term:"Сила трения скольжения",def:"Сила, возникающая при скольжении одного тела по другому: она пропорциональна силе нормального давления и не зависит от площади соприкосновения.",life:"Кирпич тянется по полу с одинаковой силой, лежит он плашмя или стоит на ребре."},
+   {type:"term",term:"Закон сохранения импульса",def:"Суммарный импульс замкнутой системы тел не изменяется при любых взаимодействиях тел внутри системы.",life:"Когда ты спрыгиваешь с лодки на берег, лодка отплывает назад: импульс системы человек плюс лодка остаётся прежним."},
+   {type:"term",term:"Постоянство температуры при плавлении и кипении",def:"Пока вещество плавится или кипит, его температура не меняется, а подводимая энергия увеличивает внутреннюю энергию вещества.",life:"Лёд в стакане с водой тает при 0 °C, и пока он не растаял, вода не становится теплее."},
+   {type:"term",term:"Насыщенный пар",def:"Пар, находящийся в равновесии со своей жидкостью: его давление при данной температуре не зависит от занимаемого объёма.",life:"Над водой в закрытой бутылке пар насыщенный: его давление определяется температурой, а не размером бутылки."},
+   {type:"term",term:"Сила Лоренца",def:"Сила, действующая со стороны магнитного поля на движущуюся заряженную частицу: она перпендикулярна скорости, поэтому работу не совершает.",life:"В кинескопе старого телевизора магнитное поле отклоняло пучок электронов, но не разгоняло и не тормозило его."},
+   {type:"term",term:"Электромагнитная индукция",def:"Возникновение тока в замкнутом проводящем контуре при изменении магнитного потока через контур.",life:"При беспроводной зарядке меняющееся магнитное поле катушки зарядки наводит ток в катушке внутри телефона."},
+   {type:"term",term:"Фотон и энергия фотоэлектронов",def:"Энергия фотона пропорциональна частоте света; максимальная кинетическая энергия фотоэлектронов зависит от частоты, а не от интенсивности света.",life:"Красная подсветка в фотолаборатории не засвечивает фотобумагу: энергии красных фотонов не хватает, а яркость лампы тут ни при чём."}
+  ],
+  qs:[
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Если равнодействующая сил, приложенных к телу, равна нулю, то в инерциальной системе отсчёта тело покоится или движется равномерно и прямолинейно.","При плавлении кристаллического вещества его температура не изменяется, а внутренняя энергия увеличивается.","Индукционный ток в замкнутом проводящем контуре возникает и при неизменном магнитном потоке через контур.","При последовательном соединении проводников сила тока во всех проводниках одинакова.","Максимальная кинетическая энергия фотоэлектронов пропорциональна интенсивности падающего света."],ans:[0,1,3],why:"Первое — первый закон Ньютона. При плавлении температура постоянна, внутренняя энергия растёт. Для индукционного тока нужно изменение магнитного потока, при неизменном потоке тока нет. При последовательном соединении ток одинаков. Энергия фотоэлектронов зависит от частоты, а не от интенсивности."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Сила трения скольжения тем больше, чем больше площадь соприкосновения тел.","Давление насыщенного пара при постоянной температуре не зависит от занимаемого им объёма.","Сила Лоренца не совершает работы.","Электромагнитные волны являются продольными.","Энергия фотона прямо пропорциональна частоте света."],ans:[1,2,4],why:"Сила трения скольжения не зависит от площади. Давление насыщенного пара определяется температурой. Сила Лоренца перпендикулярна скорости, работы не совершает. Электромагнитные волны поперечные. E = hν."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Период колебаний математического маятника при малых углах отклонения не зависит от массы груза.","При изобарном расширении идеального газа его внутренняя энергия не изменяется.","При параллельном соединении резисторов напряжение на каждом из них одинаково.","Магнитное поле действует на покоящуюся заряженную частицу с силой Лоренца.","При β⁻-распаде зарядовое число ядра уменьшается на 1."],ans:[0,2],why:"T = 2π√(l/g), масса не входит. При изобарном расширении температура растёт, значит растёт и внутренняя энергия. Параллельное соединение — напряжение одинаково. Сила Лоренца зависит от скорости, на покоящийся заряд равна нулю. При β⁻-распаде Z растёт на 1."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Если лифт движется с ускорением, направленным вверх, то вес находящегося в нём человека больше силы тяжести, действующей на него.","Внутренняя энергия идеального одноатомного газа определяется только его температурой и количеством вещества.","ЭДС самоиндукции в катушке тем больше, чем меньше скорость изменения силы тока в ней.","При переходе света из воздуха в стекло частота света уменьшается.","Атом излучает фотон при переходе с более высокого энергетического уровня на более низкий."],ans:[0,1,4],why:"P = m(g + a) > mg. U = (3/2)νRT. ЭДС самоиндукции пропорциональна скорости изменения тока, а не обратно. При переходе в другую среду частота света не меняется, уменьшается скорость и длина волны. Излучение — переход вниз."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Работа силы тяжести не зависит от формы траектории, а определяется только начальным и конечным положениями тела.","Давление идеального газа при постоянном объёме прямо пропорционально его температуре по шкале Цельсия.","Электрический ток в металлах — это направленное движение положительных ионов.","Линии магнитной индукции магнитного поля тока замкнуты.","Фотоэффект возникает при любой частоте света, если интенсивность излучения достаточно велика."],ans:[0,3],why:"Сила тяжести потенциальна, A = mg(h₁ − h₂). Давление пропорционально абсолютной температуре в кельвинах, а не градусам Цельсия. Ток в металлах создают электроны. Магнитных зарядов нет, линии замкнуты. Для фотоэффекта нужна частота выше красной границы, интенсивность этого не заменит."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Импульс замкнутой системы тел сохраняется при любых взаимодействиях тел внутри этой системы.","Температура кипения жидкости не зависит от внешнего давления.","Работа электростатического поля при перемещении заряда по замкнутой траектории равна нулю.","В электромагнитной волне векторы напряжённости электрического поля и индукции магнитного поля перпендикулярны друг другу.","Период полураспада радиоактивного вещества уменьшается при нагревании вещества."],ans:[0,2,3],why:"Закон сохранения импульса. Кипение зависит от давления: в горах вода кипит при температуре ниже 100 °C. Электростатическое поле потенциально. В электромагнитной волне E ⊥ B. Период полураспада от температуры не зависит."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Потенциальная энергия сжатой пружины прямо пропорциональна её деформации.","При изотермическом сжатии идеального газа его давление растёт, а внутренняя энергия не изменяется.","Мощность тока на резисторе постоянного сопротивления прямо пропорциональна силе тока.","Угол отражения света от зеркальной поверхности равен углу падения.","Разрежённые атомарные газы дают линейчатый спектр излучения."],ans:[1,3,4],why:"Eп = kx²/2, зависимость квадратичная. При изотермическом сжатии pV = const, давление растёт, а температура и внутренняя энергия постоянны. P = I²R, зависимость квадратичная. Закон отражения верен. Линейчатый спектр дают атомы разрежённого газа."},
+   {type:"multi",q:"Выберите все верные утверждения о физических явлениях, величинах и закономерностях.",opts:["Ускорение свободного падения тела в вакууме вблизи поверхности Земли не зависит от массы тела.","КПД тепловой машины может быть равен 100 %.","Электроёмкость плоского конденсатора обратно пропорциональна расстоянию между его пластинами.","Сила Ампера, действующая на прямой проводник с током в магнитном поле, равна нулю, если проводник расположен перпендикулярно линиям магнитной индукции.","В ядерных реакциях сохраняются суммарное зарядовое число и суммарное массовое число."],ans:[0,2,4],why:"g не зависит от массы. КПД = 1 − Tх/Tн всегда меньше 100 %. C = ε₀εS/d. F = IBl sin α: при перпендикулярном расположении синус равен 1 и сила максимальна. В ядерной реакции сохраняются сумма Z и сумма A."}
+  ]}
+];
+
+
+const BLOCKS = [
+{ id:"mech", title:"Механика", topics:[
+ { id:"m1", num:1, title:"Кинематика", fmt:"ответ числом · 1 балл",
+   lesson:[
+    {p:"Задание 1 проверяет два умения: найти проекцию ускорения и найти путь по графику скорости. Ответ — число."},
+    {h:"Как читать график скорости vₓ(t)"},
+    {ul:["<b>Наклон графика</b> — проекция ускорения: "+F("a = Δv/Δt")+".","<b>Площадь под графиком</b> — путь за это время.","<b>Участок ниже оси t</b> — тело едет назад. Для пути площади складывают по модулю, для перемещения — со знаком."]},
+    {h:"Ловушки ЕГЭ"},
+    {ul:["<b>Знак проекции.</b> Тело тормозит вдоль оси — ускорение отрицательное, в ответ пиши с минусом.","<b>Путь по нескольким участкам</b> — считай каждый отдельно и складывай.","<b>Единицы.</b> км/ч в м/с — делением на 3,6."]},
+    {life:"Спидометр показывает скорость, а пробег за поездку — это и есть площадь под графиком твоей скорости."}
+   ],
+   cards:[
+    {type:"formula",name:"Скорость при равноускоренном движении",f:"<i>v</i> = <i>v</i><sub>0</sub> + <i>at</i>",life:"Машина трогается со светофора с ускорением 2 м/с²: через 5 с её скорость 10 м/с, то есть 36 км/ч."},
+    {type:"formula",name:"Координата при равноускоренном движении",f:"<i>x</i> = <i>x</i><sub>0</sub> + <i>v</i><sub>0</sub><i>t</i> + <i>at</i>²/2",life:"Так можно прикинуть, где окажется машина через несколько секунд, зная, где она сейчас, её скорость и разгон."},
+    {type:"formula",name:"Ускорение",f:"<i>a</i> = (<i>v</i> − <i>v</i><sub>0</sub>)/<i>t</i>",life:"Разгон до 100 км/ч за 10 с: 100 км/ч ≈ 28 м/с, значит ускорение около 2,8 м/с²."},
+    {type:"formula",name:"Путь без времени",f:"<i>v</i>² − <i>v</i><sub>0</sub>² = 2<i>as</i>",life:"Скорость вдвое больше — тормозной путь вчетверо длиннее: путь зависит от квадрата скорости. Поэтому зимой на трассе держат дистанцию."},
+    {type:"formula",name:"Средняя скорость",f:"<i>v</i><sub>ср</sub> = <i>s</i><sub>весь</sub>/<i>t</i><sub>всё</sub>",life:"Час ехал 100 км/ч и час стоял в пробке: средняя скорость 50 км/ч, а не 100."},
+    {type:"term",term:"Путь по графику скорости",def:"Площадь фигуры под графиком vₓ(t) за выбранный промежуток времени.",life:"Два часа по 60 км/ч — на графике прямоугольник 2 × 60. Его площадь 120 — это 120 км пути."}
+   ],
+   qs:[
+    {type:"num",q:"По графику зависимости проекции скорости тела от времени определите проекцию ускорения тела.",svg:graph({pts:[[0,10],[5,0]],x:[0,6],y:[0,10],dx:1,dy:2,xl:"t, с",yl:"vₓ, м/с"}),unit:"м/с²",ans:-2,why:"aₓ = Δv/Δt = (0 − 10)/5 = −2 м/с². Тело тормозит — проекция отрицательная."},
+    {type:"num",q:"По графику определите путь, пройденный телом за 8 с.",svg:graph({pts:[[0,0],[3,6],[5,6],[8,0]],x:[0,8],y:[0,6],dx:1,dy:1,xl:"t, с",yl:"vₓ, м/с"}),unit:"м",ans:30,why:"Площадь под графиком: 3·6/2 + 2·6 + 3·6/2 = 9 + 12 + 9 = 30 м."},
+    {type:"num",q:"По графику определите путь, пройденный телом за 4 с.",svg:graph({pts:[[0,4],[4,-4]],x:[0,5],y:[-4,4],dx:1,dy:2,xl:"t, с",yl:"vₓ, м/с"}),unit:"м",ans:8,why:"От 0 до 2 с тело едет вперёд и проходит 4 м, от 2 до 4 с — назад ещё 4 м. Путь 8 м, а перемещение 0."},
+    {type:"num",q:"Координата тела меняется по закону "+F("x = 5 + 2t − 3t²")+" (все величины в СИ). Определите проекцию ускорения тела.",unit:"м/с²",ans:-6,why:"Сравни с x = x₀ + v₀t + at²/2: a/2 = −3, значит a = −6 м/с²."},
+    {type:"num",q:"Автомобиль трогается с места с ускорением 2 м/с². Какой путь он пройдёт за 5 с?",unit:"м",ans:25,why:"s = at²/2 = 2 · 25/2 = 25 м."},
+    {type:"num",q:"Автомобиль ехал со скоростью 20 м/с и, равномерно тормозя, остановился за 4 с. Определите проекцию ускорения на направление движения.",unit:"м/с²",ans:-5,why:"a = (0 − 20)/4 = −5 м/с²."}
+   ]},
+ { id:"m2", num:2, title:"Динамика: силы", fmt:"ответ числом · 1 балл",
+   lesson:[
+    {p:"Задание 2: второй закон Ньютона, закон Гука, закон всемирного тяготения и сила трения. Данные часто даны графиком или таблицей. Ответ — число."},
+    {h:"Ловушки ЕГЭ"},
+    {ul:["<b>Переводи в СИ:</b> сантиметры в метры, граммы в килограммы.","<b>Сила трения скольжения</b> — "+F("μN")+", на горизонтальной поверхности "+F("N = mg")+".","<b>Тяготение:</b> расстояние в квадрате. Расстояние ×2 — сила ÷4.","<b>По таблице или графику</b> "+F("F(x)")+" жёсткость "+F("k = F/x")+" на любом участке."]},
+    {p:"Везде считай "+F("g")+" = 10 м/с²."},
+    {life:"Весы на рынке — это пружина: по закону Гука растяжение пропорционально весу, поэтому шкала равномерная."}
+   ],
+   cards:[
+    {type:"formula",name:"Второй закон Ньютона",f:"<i>F</i> = <i>ma</i>",life:"Пустую тележку в магазине толкнуть легко, полную — тяжело: при той же силе ускорение тем меньше, чем больше масса."},
+    {type:"formula",name:"Закон Гука",f:"<i>F</i><sub>упр</sub> = <i>kx</i>",life:"Эспандер: растянул вдвое сильнее — он тянет назад вдвое сильнее."},
+    {type:"formula",name:"Закон всемирного тяготения",f:"<i>F</i> = <i>Gm</i><sub>1</sub><i>m</i><sub>2</sub>/<i>r</i>²",life:"Луна притягивает воду океанов — отсюда приливы. Вдвое дальше — вчетверо слабее."},
+    {type:"formula",name:"Сила трения скольжения",f:"<i>F</i><sub>тр</sub> = <i>μN</i>",life:"На льду μ маленький — машина тормозит дольше. Поэтому зимой шипы и песок."},
+    {type:"formula",name:"Сила тяжести",f:"<i>F</i> = <i>mg</i>",life:"Мешок муки 50 кг давит на плечо с силой около 500 Н."},
+    {type:"formula",name:"Третий закон Ньютона",f:"<i>F</i><sub>12</sub> = −<i>F</i><sub>21</sub>",life:"Отталкиваешься от бортика в бассейне: ты давишь на бортик, а он с той же силой толкает тебя вперёд."}
+   ],
+   qs:[
+    {type:"num",q:"На тело массой 2 кг действует равнодействующая сила, которая сообщает ему ускорение 3 м/с². Определите модуль этой силы.",unit:"Н",ans:6,why:"F = ma = 2 · 3 = 6 Н."},
+    {type:"num",q:"Пружину жёсткостью 200 Н/м растянули на 5 см. Определите модуль силы упругости.",unit:"Н",ans:10,why:"5 см = 0,05 м. F = kx = 200 · 0,05 = 10 Н."},
+    {type:"num",q:"Брусок массой 5 кг скользит по горизонтальному столу. Коэффициент трения 0,2. Определите силу трения скольжения.",unit:"Н",ans:10,why:"F = μmg = 0,2 · 5 · 10 = 10 Н."},
+    {type:"num",q:"Два тела притягиваются с силой 36 Н. Расстояние между ними увеличили в 3 раза. С какой силой они притягиваются теперь?",unit:"Н",ans:4,why:"Сила обратно пропорциональна квадрату расстояния: 36/3² = 4 Н."},
+    {type:"num",q:"В таблице показана зависимость силы упругости пружины от её растяжения. Определите жёсткость пружины."+table([["x, см",0,1,2,3],["F, Н",0,2,4,6]]),unit:"Н/м",ans:200,why:"k = F/x = 2 Н / 0,01 м = 200 Н/м."},
+    {type:"num",q:"Тело массой 4 кг под действием горизонтальной силы F движется по столу с ускорением 2 м/с². Сила трения 3 Н. Определите модуль силы F.",unit:"Н",ans:11,why:"F − Fтр = ma, значит F = 4 · 2 + 3 = 11 Н."}
+   ]},
+ { id:"m3", num:3, title:"Импульс, работа, энергия", fmt:"ответ числом · 1 балл",
+   lesson:[
+    {p:"Задание 3: импульс тела и импульс силы, работа, кинетическая и потенциальная энергия, энергия пружины и сохранение энергии в простых случаях: свободное падение, движение по гладкой наклонной плоскости."},
+    {h:"Ловушки ЕГЭ"},
+    {ul:["<b>Импульс — вектор.</b> Мяч отскочил от стены с той же скоростью — изменение импульса "+F("2mv")+", а не 0.","<b>Работа под углом:</b> "+F("A = Fs cos α")+". При 90° работа равна нулю.","<b>Свободное падение с высоты h:</b> "+F("v = √(2gh)")+"."]},
+    {life:"Подушки безопасности не уменьшают импульс, который нужно погасить, — они растягивают время удара, и сила становится меньше."}
+   ],
+   cards:[
+    {type:"formula",name:"Импульс тела",f:"<i>p</i> = <i>mv</i>",life:"Грузовик на 20 км/ч опаснее велосипеда на той же скорости: масса больше — импульс больше, остановить труднее."},
+    {type:"formula",name:"Кинетическая энергия",f:"<i>E</i><sub>к</sub> = <i>mv</i>²/2",life:"Скорость выросла с 60 до 120 км/ч — энергия удара выросла в 4 раза. Поэтому превышение так опасно."},
+    {type:"formula",name:"Потенциальная энергия в поле тяжести",f:"<i>E</i><sub>п</sub> = <i>mgh</i>",life:"Вода наверху плотины ГЭС — запас потенциальной энергии; падая, она крутит турбины."},
+    {type:"formula",name:"Энергия сжатой или растянутой пружины",f:"<i>E</i><sub>п</sub> = <i>kx</i>²/2",life:"Сжатая пружина в батуте или в ручке запасает энергию и отдаёт её, когда распрямляется."},
+    {type:"formula",name:"Работа силы",f:"<i>A</i> = <i>Fs</i> cos <i>α</i>",life:"Тянешь санки за верёвку под углом — часть силы тянет вверх и на движение вперёд не работает. Отсюда cos α."},
+    {type:"formula",name:"Закон сохранения импульса",f:"<i>m</i><sub>1</sub><i>v</i><sub>1</sub> + <i>m</i><sub>2</sub><i>v</i><sub>2</sub> = const",life:"Отдача ружья: пуля летит вперёд, ружьё толкает плечо назад — общий импульс остался нулевым."},
+    {type:"formula",name:"Мощность",f:"<i>N</i> = <i>A</i>/<i>t</i>",life:"Два грузчика подняли одинаковые мешки на пятый этаж, но один вдвое быстрее — его мощность вдвое больше."}
+   ],
+   qs:[
+    {type:"num",q:"Мяч массой 0,5 кг летит со скоростью 4 м/с. Определите модуль импульса мяча.",unit:"кг·м/с",ans:2,why:"p = mv = 0,5 · 4 = 2 кг·м/с."},
+    {type:"num",q:"Тело массой 2 кг движется со скоростью 3 м/с. Определите его кинетическую энергию.",unit:"Дж",ans:9,why:"Eк = mv²/2 = 2 · 9/2 = 9 Дж."},
+    {type:"num",q:"Камень свободно падает с высоты 5 м. Определите скорость камня у земли. Сопротивлением воздуха пренебречь.",unit:"м/с",ans:10,why:"mgh = mv²/2, значит v = √(2gh) = √100 = 10 м/с."},
+    {type:"num",q:"Пружину жёсткостью 400 Н/м сжали на 10 см. Определите потенциальную энергию пружины.",unit:"Дж",ans:2,why:"10 см = 0,1 м. E = kx²/2 = 400 · 0,01/2 = 2 Дж."},
+    {type:"num",q:"Санки тянут за верёвку с силой 20 Н под углом 60° к горизонту. Какую работу совершает эта сила на пути 3 м?",unit:"Дж",ans:30,why:"A = Fs cos α = 20 · 3 · 0,5 = 30 Дж."},
+    {type:"num",q:"Мяч массой 0,2 кг ударяется о стену со скоростью 5 м/с и отскакивает с той же по модулю скоростью. Определите модуль изменения импульса мяча.",unit:"кг·м/с",ans:2,why:"Скорость сменила направление: Δp = mv − (−mv) = 2 · 0,2 · 5 = 2 кг·м/с."}
+   ]},
+ { id:"m4", num:4, title:"Статика, гидростатика, колебания", fmt:"ответ числом · 1 балл",
+   lesson:[
+    {p:"Задание 4: равновесие рычага, сила Архимеда и давление жидкости, колебания маятников и волны."},
+    {h:"Ловушки ЕГЭ"},
+    {ul:["<b>Лишние данные.</b> Тело целиком в жидкости — плотность тела не нужна. Тело плавает — сила Архимеда равна силе тяжести, и не нужна уже плотность жидкости.","<b>Объём:</b> 1 см³ = 10⁻⁶ м³.","<b>Период математического маятника</b> не зависит от массы груза, а пружинного — от длины нити и g."]},
+    {life:"Спасательный круг держит человека не потому, что лёгкий, а потому что вытесняет много воды при малом весе."}
+   ],
+   cards:[
+    {type:"formula",name:"Момент силы",f:"<i>M</i> = <i>Fl</i>",life:"Дверь легче открыть за ручку у края, чем толкая у петель: плечо больше — момент больше."},
+    {type:"formula",name:"Правило рычага",f:"<i>F</i><sub>1</sub><i>l</i><sub>1</sub> = <i>F</i><sub>2</sub><i>l</i><sub>2</sub>",life:"Качели-балансир: лёгкий ребёнок уравновесит взрослого, если сядет дальше от опоры."},
+    {type:"formula",name:"Давление столба жидкости",f:"<i>p</i> = <i>ρgh</i>",life:"На глубине 10 м давление воды около 100 кПа — как ещё одна атмосфера. Поэтому у дайверов закладывает уши."},
+    {type:"formula",name:"Сила Архимеда",f:"<i>F</i><sub>A</sub> = <i>ρ</i><sub>ж</sub><i>gV</i><sub>погр</sub>",life:"Стальной корабль не тонет: он вытесняет столько воды, что её вес равен весу корабля."},
+    {type:"formula",name:"Период математического маятника",f:"<i>T</i> = 2π√(<i>l</i>/<i>g</i>)",life:"Маятник в старых часах: длиннее нить — медленнее качается. Чтобы часы шли быстрее, маятник укорачивают."},
+    {type:"formula",name:"Период пружинного маятника",f:"<i>T</i> = 2π√(<i>m</i>/<i>k</i>)",life:"Гружёная машина на рессорах качается медленнее пустой: масса больше — период больше."},
+    {type:"formula",name:"Частота колебаний",f:"<i>ν</i> = 1/<i>T</i>",life:"Сердце бьётся 60 раз в минуту: частота 1 Гц, период 1 с."},
+    {type:"formula",name:"Длина волны",f:"<i>λ</i> = <i>vT</i> = <i>v</i>/<i>ν</i>",life:"Нота «ля» 440 Гц в воздухе — это волна длиной около 77 см."}
+   ],
+   qs:[
+    {type:"num",q:"Шар плотностью 2,7 г/см³ и объёмом 200 см³ целиком погружён в воду. Определите силу Архимеда, действующую на шар.",unit:"Н",ans:2,why:"F = ρ(воды)·g·V = 1000 · 10 · 0,0002 = 2 Н. Плотность шара — лишнее данное."},
+    {type:"num",q:"Деревянный брусок массой 300 г плавает на поверхности масла плотностью 900 кг/м³. Определите силу Архимеда, действующую на брусок.",unit:"Н",ans:3,why:"Тело плавает — сила Архимеда равна силе тяжести: 0,3 · 10 = 3 Н. Плотность масла здесь лишняя."},
+    {type:"num",q:"Определите давление воды на глубине 2 м. Атмосферное давление не учитывать.",unit:"кПа",ans:20,why:"p = ρgh = 1000 · 10 · 2 = 20 000 Па = 20 кПа."},
+    {type:"num",q:"На рычаг слева, на расстоянии 0,3 м от опоры, действует сила 40 Н. Какую силу нужно приложить справа на расстоянии 0,6 м от опоры, чтобы рычаг был в равновесии?",unit:"Н",ans:20,why:"F₁l₁ = F₂l₂: 40 · 0,3 = F · 0,6, значит F = 20 Н."},
+    {type:"num",q:"Звуковая волна частотой 170 Гц распространяется в воздухе со скоростью 340 м/с. Определите длину волны.",unit:"м",ans:2,why:"λ = v/ν = 340/170 = 2 м."},
+    {type:"num",q:"Длину нити математического маятника увеличили в 4 раза. Во сколько раз увеличился период колебаний?",unit:"раз(а)",ans:2,why:"T ~ √l: √4 = 2."},
+    {type:"num",q:"Маятник совершил 20 колебаний за 10 с. Определите период колебаний.",unit:"с",ans:0.5,why:"T = t/N = 10/20 = 0,5 с."}
+   ]},
+ { id:"m5", num:5, title:"Анализ движения: верные утверждения", fmt:"выбор утверждений · 2 балла",
+   lesson:[
+    {p:"Задание 5: разобрать механический процесс по графику, таблице или описанию и выбрать <b>все</b> верные утверждения. Ответ — их номера по возрастанию, например 135."},
+    {h:"Как решать"},
+    {ul:["Проверяй каждое утверждение отдельно: их порядок не связан с логикой решения.","График "+F("x(t)")+": наклон — скорость, горизонтальный участок — тело покоится.","График "+F("vₓ(t)")+": наклон — ускорение, площадь — путь.","В точке остановки скорость равна нулю, но ускорение может быть не нулём."]},
+    {life:"Это как разбор записи с видеорегистратора: по кадрам видно, где машина разгонялась, где ехала ровно, где стояла."}
+   ],
+   cards:[
+    {type:"term",term:"Перемещение",def:"Вектор от начальной точки к конечной; может быть равно нулю, даже если путь большой.",life:"Пробежал круг на стадионе и вернулся к старту: путь 400 м, перемещение 0."},
+    {type:"term",term:"Путь",def:"Длина траектории; не бывает отрицательным и со временем не уменьшается.",life:"Счётчик пробега в машине показывает путь: он только растёт, даже если ты вернулся домой."},
+    {type:"term",term:"Наклон графика x(t)",def:"Показывает проекцию скорости: круче график — больше скорость, горизонтальный участок — тело покоится.",life:"Горизонтальный кусок на графике поездки — стоянка на светофоре."},
+    {type:"term",term:"Наклон графика v(t)",def:"Показывает проекцию ускорения; горизонтальный участок — движение с постоянной скоростью.",life:"Горизонтальный участок на графике скорости — включённый круиз-контроль на трассе."},
+    {type:"term",term:"Равномерное прямолинейное движение",def:"Движение с постоянной скоростью; равнодействующая всех сил равна нулю.",life:"Машина едет по трассе ровно 90 км/ч: сила тяги точно уравновешивает сопротивление."},
+    {type:"term",term:"Ускорение в верхней точке броска",def:"Равно g и направлено вниз, хотя скорость тела в этой точке равна нулю.",life:"Подброшенный мяч на миг замирает наверху, но сила тяжести действует на него и в этот момент."},
+    {type:"term",term:"Амплитуда колебаний",def:"Наибольшее отклонение от положения равновесия; за один период тело проходит путь, равный четырём амплитудам.",life:"Груз на пружине уходит на 5 см вниз и на 5 см вверх: за одно полное колебание он проходит 20 см."}
+   ],
+   qs:[
+    {type:"multi",q:"На рисунке — график зависимости проекции скорости тела от времени. Выберите все верные утверждения.",svg:graph({pts:[[0,0],[2,4],[6,4],[8,0]],x:[0,8],y:[0,4],dx:1,dy:1,xl:"t, с",yl:"vₓ, м/с"}),opts:["На участке от 0 до 2 с проекция ускорения тела равна 2 м/с².","На участке от 2 до 6 с тело покоится.","Путь, пройденный телом за 8 с, равен 24 м.","На участке от 6 до 8 с равнодействующая сил, действующих на тело, равна нулю.","Модуль ускорения тела на участке от 6 до 8 с равен 2 м/с²."],ans:[0,2,4],why:"0–2 с: a = 4/2 = 2 м/с². 2–6 с: скорость постоянна, тело едет равномерно, а не стоит. Путь — площадь: 4 + 16 + 4 = 24 м. 6–8 с: тело тормозит с ускорением 2 м/с², значит равнодействующая не ноль."},
+    {type:"multi",q:"На рисунке — график зависимости координаты тела от времени. Выберите все верные утверждения.",svg:graph({pts:[[0,0],[2,6],[4,6],[6,0]],x:[0,6],y:[0,6],dx:1,dy:2,xl:"t, с",yl:"x, м"}),opts:["Путь, пройденный телом за 6 с, равен 12 м.","На участке от 2 до 4 с тело движется равномерно со скоростью 6 м/с.","Перемещение тела за 6 с равно 12 м.","На участке от 0 до 2 с скорость тела равна 3 м/с.","На участке от 4 до 6 с проекция скорости тела отрицательна."],ans:[0,3,4],why:"Тело ушло на 6 м, постояло и вернулось: путь 12 м, перемещение 0. 2–4 с — горизонтальный участок, тело покоится. 0–2 с: v = 6/2 = 3 м/с. 4–6 с координата убывает — проекция скорости отрицательна."},
+    {type:"multi",q:"Мяч бросили вертикально вверх со скоростью 20 м/с. Сопротивление воздуха не учитывать, g = 10 м/с². Выберите все верные утверждения.",opts:["Максимальная высота подъёма мяча 20 м.","В верхней точке ускорение мяча равно нулю.","Время подъёма мяча 2 с.","Через 3 с после броска мяч летит вверх со скоростью 10 м/с.","При подъёме кинетическая энергия мяча увеличивается."],ans:[0,2],why:"h = v²/2g = 400/20 = 20 м; t = v/g = 2 с. Ускорение всё время g. Через 3 с v = 20 − 30 = −10 м/с — мяч уже летит вниз. При подъёме скорость падает, значит и кинетическая энергия."},
+    {type:"multi",q:"Груз на пружине совершает гармонические колебания с периодом 2 с и амплитудой 5 см. Выберите все верные утверждения.",opts:["За один период груз проходит путь 5 см.","Частота колебаний 0,5 Гц.","В крайней точке ускорение груза равно нулю.","Если массу груза увеличить в 4 раза, период станет 4 с.","В положении равновесия скорость груза максимальна."],ans:[1,3,4],why:"За период путь — 4 амплитуды, 20 см. ν = 1/T = 0,5 Гц. В крайней точке ускорение максимально. T ~ √m: масса ×4 — период ×2 = 4 с."}
+   ]},
+ { id:"m6", num:6, title:"Как изменятся величины. Соответствие", fmt:"две цифры · 2 балла",
+   lesson:[
+    {p:"Задание 6: определить, как изменятся две величины (1 — увеличивается, 2 — уменьшается, 3 — не изменяется), или установить соответствие. Ответ — две цифры, порядок важен. Одна неверная цифра — минус балл."},
+    {h:"Как решать"},
+    {ul:["Сначала запиши формулу, которая связывает величину с тем, что меняется.","Представь процесс: куда движется тело, растёт или падает скорость.","Без трения полная механическая энергия не меняется.","В «как изменится» цифры могут повторяться, в соответствии графиков — нет."]},
+    {life:"Это вопросы вида «что будет, если…»: натянешь тетиву сильнее — стрела полетит быстрее. Сначала представь, потом подтверди формулой."}
+   ],
+   cards:[
+    {type:"formula",name:"Скорость спутника на круговой орбите",f:"<i>v</i> = √(<i>GM</i>/<i>r</i>)",life:"Чем выше орбита, тем медленнее спутник: МКС облетает Землю за полтора часа, а Луна — почти за месяц."},
+    {type:"formula",name:"Закон сохранения механической энергии",f:"<i>E</i><sub>к</sub> + <i>E</i><sub>п</sub> = const",life:"Американские горки: тележку один раз поднимают наверх, дальше она катается за счёт этого запаса энергии."},
+    {type:"term",term:"Превращение энергии в маятнике",def:"Кинетическая энергия максимальна в положении равновесия, потенциальная — в крайних точках; без трения полная энергия не меняется.",life:"Качели: внизу ребёнок летит быстрее всего, а в верхней точке на миг замирает."},
+    {type:"term",term:"Период математического маятника и масса",def:"Период математического маятника не зависит от массы груза — только от длины нити и g.",life:"Тяжёлая гиря и лёгкий шарик на нитях одной длины качаются в такт."},
+    {type:"term",term:"Равнодействующая сила",def:"Векторная сумма всех сил, действующих на тело; по второму закону Ньютона равна ma.",life:"Машину толкают вперёд двое по 300 Н, а трение тормозит с силой 500 Н: равнодействующая 100 Н вперёд."}
+   ],
+   qs:[
+    {type:"rows",kind:"change",q:"Груз, подвешенный к потолку на пружине, совершает вертикальные колебания. Пружина всё время растянута. Как меняются величины, когда груз движется вниз от положения равновесия?",rows:["Потенциальная энергия пружины","Кинетическая энергия груза"],ans:[1,2],why:"Ниже положения равновесия растяжение растёт — энергия пружины растёт. Груз тормозит — кинетическая энергия падает."},
+    {type:"rows",kind:"change",q:"Брусок соскальзывает с гладкой наклонной плоскости. Как меняются величины?",rows:["Кинетическая энергия бруска","Полная механическая энергия бруска"],ans:[1,3],why:"Скорость растёт — кинетическая энергия растёт. Трения нет — полная механическая энергия сохраняется."},
+    {type:"rows",kind:"change",q:"Длину нити математического маятника уменьшили. Как изменились величины?",rows:["Период колебаний","Частота колебаний"],ans:[2,1],why:"T = 2π√(l/g): нить короче — период меньше. Частота ν = 1/T — больше."},
+    {type:"rows",kind:"change",q:"Мяч брошен вертикально вверх. Сопротивления воздуха нет. Как меняются величины при подъёме?",rows:["Модуль скорости мяча","Ускорение мяча"],ans:[2,3],why:"При подъёме мяч тормозит. Ускорение всё время равно g."},
+    {type:"rows",kind:"change",q:"Спутник перевели с одной круговой орбиты на другую, большего радиуса. Как изменились величины?",rows:["Сила притяжения спутника к Земле","Скорость спутника на орбите"],ans:[2,2],why:"F ~ 1/r² — меньше. v = √(GM/r) — тоже меньше."},
+    {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта.",rows:["Кинетическая энергия","Импульс тела"],choices:["<i>mv</i>","<i>mv</i>²/2","<i>mgh</i>","<i>kx</i>²/2"],ans:[2,1],why:"Eк = mv²/2, p = mv."},
+    {type:"rows",kind:"match",q:"Установите соответствие между физическими величинами и формулами для их расчёта.",rows:["Период математического маятника","Период пружинного маятника"],choices:["2π√(<i>l</i>/<i>g</i>)","√(<i>k</i>/<i>m</i>)","2π√(<i>m</i>/<i>k</i>)","2π<i>l</i>/<i>g</i>"],ans:[1,3],why:"Математический маятник: T = 2π√(l/g). Пружинный: T = 2π√(m/k)."}
+   ]}
+]},
+{ id:"mol", title:"Молекулярная физика", topics:NEW_TOPICS_7_10},
+{ id:"el", title:"Электродинамика", topics:NEW_TOPICS_11_15},
+{ id:"qf", title:"Квантовая физика", topics:NEW_TOPICS_16_18.filter(t => t.num <= 17)},
+{ id:"meth", title:"Все разделы и эксперимент", topics:[
+ ...NEW_TOPICS_16_18.filter(t => t.num === 18),
+ {num:19,title:"Показания приборов с погрешностью",fmt:"ответ числом · 1 балл"},
+ {num:20,title:"Выбор оборудования для опыта",fmt:"выбор · 1 балл"}
+]},
+{ id:"p2", title:"Часть 2 · развёрнутый ответ", topics:[
+ {num:21,title:"Качественная задача",fmt:"развёрнутый · 3 балла"},
+ {num:22,title:"Расчётная задача по механике",fmt:"развёрнутый · 2 балла"},
+ {num:23,title:"Расчётная задача",fmt:"развёрнутый · 2 балла"},
+ {num:24,title:"Молекулярная физика, высокий уровень",fmt:"развёрнутый · 3 балла"},
+ {num:25,title:"Расчётная задача высокого уровня",fmt:"развёрнутый · 3 балла"},
+ {num:26,title:"Механика с обоснованием модели",fmt:"развёрнутый · 4 балла"}
+]}
+];
+const POINTS = [0,1,1,1,1,2,2,1,1,2,2,1,1,1,2,2,1,2,2,1,1,3,2,2,3,3,4];
+const BOSSES = [
+ {id:"mech1", block:"mech", title:"Механика, часть 1", topics:["m1","m2","m3","m4","m5","m6"], size:12, pass:9},
+ {id:"mol1", block:"mol", title:"Молекулярная физика", topics:["t7","t8","t9","t10"], size:10, pass:7},
+ {id:"el1", block:"el", title:"Электродинамика", topics:["t11","t12","t13","t14","t15"], size:12, pass:9},
+ {id:"qf1", block:"qf", title:"Квантовая физика", topics:["t16","t17"], size:8, pass:6}
+];
+const INTERVALS = [0,1,3,7,14,30,60];
+const LS_KEY = "fizika2027.v1";
+
+const ITEMS = {}, TOPICS = {};
+BLOCKS.forEach(b => b.topics.forEach(t => {
+  t.block = b.id;
+  if (!t.id) return;
+  TOPICS[t.id] = t; t.itemIds = [];
+  t.cards.forEach((c,i) => { const id = t.id+".c"+i; ITEMS[id] = Object.assign({id, topic:t.id}, c); t.itemIds.push(id); });
+  t.qs.forEach((q,i) => { const id = t.id+".q"+i; ITEMS[id] = Object.assign({id, topic:t.id}, q); t.itemIds.push(id); });
+}));
+
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad = (n,w) => String(n).padStart(w,"0");
+const key = d => d.getFullYear()+"-"+pad(d.getMonth()+1,2)+"-"+pad(d.getDate(),2);
+const today = () => key(new Date());
+const parse = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
+const addDays = (k,n) => { const d = parse(k); d.setDate(d.getDate()+n); return key(d); };
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const plural = (n,one,few,many) => { const m10=n%10, m100=n%100; if (m10===1&&m100!==11) return one; if (m10>=2&&m10<=4&&(m100<10||m100>=20)) return few; return many; };
+const fmtDate = k => parse(k).toLocaleDateString("ru-RU",{day:"numeric",month:"long"});
+
+let S = blank();
+function blank(){ return {v:1, items:{}, lessons:{}, days:{}, boss:{}, updated:0}; }
+function loadLocal(){ try { const raw = localStorage.getItem(LS_KEY); if (raw) { const s = JSON.parse(raw); if (s && s.v === 1) S = s; } } catch(e) {} }
+function commit(){ S.updated = Date.now(); try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e) {} }
+
+function prog(id){ return S.items[id] || {b:0, d:null, r:0, w:0, l:null}; }
+function grade(id, ok){
+  const t = today(), p = Object.assign({}, prog(id));
+  if (ok) { if (p.l !== t || p.b === 0) p.b = Math.min(p.b+1, INTERVALS.length-1); p.r++; }
+  else { p.b = 1; p.w++; }
+  p.l = t; p.d = addDays(t, INTERVALS[p.b]);
+  S.items[id] = p;
+  if (!S.days[t]) S.days[t] = 1;
+}
+function dueIds(){ const t = today(); return Object.keys(S.items).filter(id => ITEMS[id] && S.items[id].b >= 1 && S.items[id].d <= t).sort((a,b) => S.items[a].d < S.items[b].d ? -1 : 1); }
+function topicMastery(t){ if (!t.id) return 0; return t.itemIds.reduce((s,id) => s + Math.min(prog(id).b,5)/5, 0) / t.itemIds.length; }
+function topicStatus(t){
+  if (!t.id) return "lock";
+  if (!S.lessons[t.id]) return "new";
+  const min = Math.min(...t.itemIds.map(id => prog(id).b));
+  return min >= 5 ? "fixed" : min >= 2 ? "mastered" : "learning";
+}
+const STATUS = {lock:"скоро", new:"не начато", learning:"учу", mastered:"освоено", fixed:"закреплено"};
+function pointsHeld(){ let s = 0; Object.values(TOPICS).forEach(t => s += topicMastery(t) * POINTS[t.num]); return Math.round(s); }
+function streak(){ let k = today(); if (!S.days[k]) k = addDays(k,-1); let n = 0; while (S.days[k]) { n++; k = addDays(k,-1); } return n; }
+function weekDays(){ const t = today(); const dow = (parse(t).getDay()+6)%7; let n = 0; for (let i=0;i<=dow;i++) if (S.days[addDays(t,-i)]) n++; return n; }
+function nextLesson(){ for (const b of BLOCKS) for (const t of b.topics) if (t.id && !S.lessons[t.id]) return t; return null; }
+function bossOpen(bs){ return bs.topics.every(id => S.lessons[id]); }
+function nextDueDate(){ const ds = Object.values(S.items).filter(p => p.b>=1).map(p => p.d).sort(); return ds[0] || null; }
+function cellsHtml(str){ return `<span class="cells">${String(str).split("").map(ch => `<span class="cell${/[\/%]/.test(ch)?" sep":""}">${esc(ch)}</span>`).join("")}</span>`; }
+
+let sess = null;
+
+function renderHome(){
+  const due = dueIds(), nl = nextLesson(), st = streak(), wk = weekDays(), pts = pointsHeld();
+  let actions = "";
+  if (due.length) actions += `<button class="btn primary" data-act="review"><span><span class="t">Повторение на сегодня · ${due.length}</span><br><span class="sub">≈ ${Math.max(1,Math.ceil(due.length*0.6))} мин. Задания, срок которых пришёл.</span></span><span class="arr">→</span></button>`;
+  if (nl) actions += `<button class="btn${due.length?"":" primary"}" data-act="topic" data-id="${nl.id}"><span><span class="t">Задание №${nl.num} · ${esc(nl.title)}</span><br><span class="sub">≈ 10 мин: разбор и тренировка</span></span><span class="arr">→</span></button>`;
+  BOSSES.forEach(bs => { if (bossOpen(bs) && !(S.boss[bs.id]||{}).passed) actions += `<button class="btn" data-act="boss" data-id="${bs.id}"><span><span class="t">Босс · ${esc(bs.title)}</span><br><span class="sub">${bs.size} заданий, нужно ${bs.pass} верных</span></span><span class="arr">→</span></button>`; });
+  const nd = nextDueDate();
+  if (!due.length && !nl) actions += `<p class="note">На сегодня всё. ${nd ? "Следующее повторение — "+fmtDate(nd)+"." : ""} Новые задания скоро появятся.</p>`;
+  else if (!due.length && nd) actions += `<p class="note">Повторять сегодня нечего. Следующее повторение — ${fmtDate(nd)}.</p>`;
+
+  const blocks = BLOCKS.map(b => {
+    const open = b.topics.some(t => t.id);
+    const ready = b.topics.filter(t => t.id).length;
+    const nums = b.topics.length > 1 ? `№${b.topics[0].num}–${b.topics[b.topics.length-1].num}` : `№${b.topics[0].num}`;
+    const rows = b.topics.map(t => {
+      const s = topicStatus(t), m = Math.round(topicMastery(t)*100);
+      return `<button class="topic" ${t.id?`data-act="topic" data-id="${t.id}"`:"disabled"}>
+        <span class="n">${t.num}</span>
+        <span class="tt"><span>${esc(t.title)}</span><span class="ts">${esc(t.fmt)}</span>${t.id && S.lessons[t.id] ? `<span class="bar"><i style="width:${m}%"></i></span>` : ""}</span>
+        <span class="chip ${s}">${STATUS[s]}</span></button>`;
+    }).join("");
+    const boss = BOSSES.filter(bs => bs.block === b.id).map(bs => {
+      const r = S.boss[bs.id];
+      const range = `№${TOPICS[bs.topics[0]].num}–${TOPICS[bs.topics[bs.topics.length-1]].num}`;
+      const txt = r && r.passed ? `Пройден · лучший результат ${r.best}/${bs.size}` : r ? `Лучший результат ${r.best}/${bs.size}, нужно ${bs.pass}` : bossOpen(bs) ? `Открыт. ${bs.size} заданий по ${range}, нужно ${bs.pass} верных.` : `Откроется, когда откроешь все уроки ${range}.`;
+      return `<div class="boss"><span class="kicker">Босс · ${esc(bs.title)}</span><span class="note">${txt}</span>${bossOpen(bs)?`<button class="btn small" data-act="boss" data-id="${bs.id}">Сразиться</button>`:""}</div>`;
+    }).join("");
+    return `<details class="block" ${open?"open":""}><summary><span class="bt">${esc(b.title)}</span><span class="bm">${nums}${open?` · открыто ${ready} из ${b.topics.length}`:" · скоро"}</span></summary><div class="topics">${rows}</div>${boss}</details>`;
+  }).join("");
+
+  app.innerHTML = `
+  <header class="top">
+    <span class="kicker">Тренажёр ЕГЭ · физика</span>
+    <h1>Физика 2027</h1>
+    <span class="target"><span class="mono">26</span> заданий · <span class="mono">45</span> первичных баллов · <span class="mono">3</span> ч <span class="mono">55</span> мин</span>
+  </header>
+  <section class="stats" aria-label="Прогресс">
+    <div class="stat"><span class="lbl">Серия, дней</span>${cellsHtml(pad(st,2))}</div>
+    <div class="stat"><span class="lbl">Неделя, дней</span>${cellsHtml(wk+"/5")}</div>
+    <div class="stat"><span class="lbl">Баллов из 45</span>${cellsHtml(pad(pts,2))}</div>
+  </section>
+  <section class="today"><h2>Сегодня</h2>${actions}</section>
+  <section class="map"><h2>Задания ЕГЭ</h2>${blocks}</section>
+  <details class="how"><summary>Как это работает</summary><ul>
+    <li>Каждое задание ЕГЭ — отдельная тема: что проверяют, формулы, ловушки и тренировка в формате экзамена.</li>
+    <li>Ошибся — задание вернётся в конце тренировки и завтра. Верные ответы возвращаются через 1, 3, 7, 14, 30 и 60 дней.</li>
+    <li>Открыл урок — тема отмечается как начатая.</li>
+    <li>«Освоено» — каждое задание темы решено верно хотя бы дважды в разные дни. «Закреплено» — дошло до интервала в 30 дней.</li>
+    <li>«Баллы под контролем» — сколько первичных баллов из 45 приходится на задания, которые ты уже освоил.</li>
+    <li>15 минут в день дают больше, чем два часа раз в неделю.</li>
+    <li>Считай g = 10 м/с². Дробные ответы пиши через запятую, отрицательные — с минусом (кнопка ±).</li>
+  </ul></details>
+  <details class="how"><summary>Резервная копия прогресса</summary>
+    <div class="backup">
+      <p class="note">Скопируй код и сохрани его, например, в «Избранном» Telegram. Если прогресс пропадёт или ты сменишь телефон — вставь код сюда и нажми «Восстановить».</p>
+      <div class="row"><button class="btn small" data-act="export">Скопировать код</button></div>
+      <textarea id="backupcode" rows="3" placeholder="Вставь код сюда" aria-label="Код прогресса"></textarea>
+      <div class="row"><button class="btn small" data-act="import">Восстановить</button></div>
+      <p class="note" id="backupmsg" role="status"></p>
+    </div>
+  </details>
+  <footer class="sync">Прогресс хранится в этом браузере. Занимайся с одного устройства и иногда сохраняй резервный код.</footer>`;
+}
+
+function exportCode(){
+  const code = "FZ1." + btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  const ta = document.getElementById("backupcode"), msg = document.getElementById("backupmsg");
+  ta.value = code;
+  const done = () => { msg.textContent = "Код скопирован. Сохрани его в заметках или в «Избранном» Telegram."; };
+  const fallback = () => { ta.focus(); ta.select(); msg.textContent = "Код выделен в поле выше — скопируй его вручную."; };
+  try { navigator.clipboard.writeText(code).then(done, fallback); } catch(e) { fallback(); }
+}
+function importCode(){
+  const ta = document.getElementById("backupcode"), msg = document.getElementById("backupmsg");
+  const raw = (ta.value || "").trim();
+  try {
+    if (!raw.startsWith("FZ1.")) throw 0;
+    const s = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+    if (!s || s.v !== 1 || typeof s.items !== "object") throw 0;
+    S = s; commit(); renderHome();
+    const m = document.getElementById("backupmsg"); if (m) m.textContent = "Прогресс восстановлен.";
+  } catch(e) { msg.textContent = "Код не подошёл. Проверь, что он скопирован целиком и начинается с FZ1."; }
+}
+
+function cardRow(c){
+  const head = c.type === "formula" ? `<span class="tn">${esc(c.name)}</span><span class="td">${F(c.f)}</span>` : `<span class="tn">${esc(c.term)}</span><span class="td">${esc(c.def)}</span>`;
+  return `<details class="term"><summary>${head}<span class="tl">Как это в жизни</span></summary><p class="tx">${esc(c.life||"")}</p></details>`;
+}
+function renderTopic(id){
+  const t = TOPICS[id], b = BLOCKS.find(x => x.id === t.block);
+  if (!S.lessons[id]) { S.lessons[id] = today(); commit(); }
+  const body = t.lesson.map(x => x.p ? `<p>${x.p}</p>` : x.h ? `<h3>${esc(x.h)}</h3>` : x.ul ? `<ul>${x.ul.map(li => `<li>${li}</li>`).join("")}</ul>` : x.svg ? x.svg : x.life ? `<div class="life"><span class="kicker">В жизни</span>${x.life}</div>` : "").join("");
+  app.innerHTML = `
+  <button class="back" data-act="home">← Все задания</button>
+  <header class="top"><span class="kicker">${esc(b.title)} · задание №${t.num} · ${esc(t.fmt)}</span><h1>${esc(t.title)}</h1></header>
+  <article class="lesson">${body}
+    <div class="termshead"><h3>Формулы и понятия</h3><button class="back" data-act="expand">Раскрыть все</button></div>
+    <p class="note">Нажми на строку — откроется пример из жизни.</p>
+    <div class="terms">${t.cards.map(cardRow).join("")}</div>
+  </article>
+  <button class="btn primary" data-act="quiz" data-id="${t.id}"><span><span class="t">Тренировка · ${t.itemIds.length} заданий</span><br><span class="sub">Формулы, понятия и задания в формате ЕГЭ</span></span><span class="arr">→</span></button>`;
+  window.scrollTo(0,0);
+}
+
+function distractors(item, field, n){
+  const same = shuffle(TOPICS[item.topic].itemIds.map(id => ITEMS[id]).filter(x => x.type === item.type && x.id !== item.id));
+  const all = shuffle(Object.values(ITEMS).filter(x => x.type === item.type && x.id !== item.id && x.topic !== item.topic));
+  const out = [];
+  for (const x of same.concat(all)) { if (out.length >= n) break; if (!out.includes(x[field]) && x[field] !== item[field]) out.push(x[field]); }
+  return out;
+}
+function makeInst(item){
+  if (item.type === "formula") {
+    const opts = shuffle([item.f, ...distractors(item, "f", 3)]);
+    return {item, kind:"single", prompt:"Какая формула подходит?", def:item.name, opts:opts.map(F), ans:opts.indexOf(item.f), why:`${item.name}: ${F(item.f)}`, whyHtml:true, life:item.life};
+  }
+  if (item.type === "term") {
+    const opts = shuffle([item.term, ...distractors(item, "term", 3)]);
+    return {item, kind:"single", prompt:"Какое понятие подходит к определению?", def:item.def, opts:opts.map(esc), ans:opts.indexOf(item.term), why:`${esc(item.term)} — ${esc(item.def)}`, whyHtml:true, life:item.life};
+  }
+  if (item.type === "num") return {item, kind:"num", prompt:item.q, svg:item.svg, unit:item.unit, ans:item.ans, why:item.why};
+  if (item.type === "multi") return {item, kind:"multi", prompt:item.q, svg:item.svg, opts:item.opts.map(esc), ans:item.ans.slice().sort((a,b)=>a-b), why:item.why};
+  return {item, kind:"rows", sub:item.kind, prompt:item.q, rows:item.rows, choices:item.kind === "change" ? CHANGE : item.choices.map(F), ans:item.ans, why:item.why};
+}
+
+function startSession(mode, ids, meta){
+  sess = {mode, meta:meta||{}, queue:ids.map(id => makeInst(ITEMS[id])), i:0, total:ids.length, correct:0, retried:new Set(), picked:new Set(), rowPick:[], typed:"", checked:false, lastOk:false};
+  renderQuestion(); window.scrollTo(0,0);
+}
+
+function answerDigits(q){
+  if (q.kind === "multi") return q.ans.map(i => i+1).join("");
+  if (q.kind === "rows") return q.ans.join("");
+  return "";
+}
+function renderQuestion(){
+  const q = sess.queue[sess.i], n = sess.i + 1, all = sess.queue.length;
+  const title = sess.mode === "lesson" ? "Задание №"+TOPICS[sess.meta.topic].num+" · тренировка" : sess.mode === "boss" ? "Босс · "+sess.meta.title : "Повторение";
+  const isRetry = sess.i >= sess.total;
+  const num = TOPICS[q.item.topic].num;
+  let body = "", foot = "";
+  if (q.kind === "single" || q.kind === "multi") {
+    body = `<div class="opts">${q.opts.map((o,i) => {
+      let cls = "";
+      if (sess.checked) { const right = q.kind === "single" ? i === q.ans : q.ans.includes(i); if (right) cls = "right"; else if (sess.picked.has(i)) cls = "wrong"; }
+      else if (sess.picked.has(i)) cls = "sel";
+      return `<button class="opt ${cls}" data-act="pick" data-i="${i}" ${sess.checked?"disabled":""}><span class="num">${i+1}</span><span>${o}</span></button>`;
+    }).join("")}</div>`;
+    if (q.kind === "multi" && !sess.checked) {
+      const picked = [...sess.picked].sort((a,b)=>a-b).map(i => i+1).join("");
+      foot = `<div class="answerline">Ответ: ${picked ? cellsHtml(picked) : `<span class="cells"><span class="cell empty">·</span></span>`}</div><button class="btn primary" data-act="check" ${picked?"":"disabled"}><span class="t">Проверить</span><span class="arr kbd">Enter</span></button>`;
+    }
+  } else if (q.kind === "num") {
+    const cls = sess.checked ? (sess.lastOk ? "right" : "wrong") : "";
+    body = `<div class="numrow"><span>Ответ:</span><button class="pm" data-act="neg" ${sess.checked?"disabled":""} aria-label="Сменить знак">±</button><input id="numans" inputmode="decimal" autocomplete="off" aria-label="Ответ" class="${cls}" value="${esc(sess.typed)}" ${sess.checked?"disabled":""}><span class="unit">${esc(q.unit)}</span></div>`;
+    if (!sess.checked) foot = `<button class="btn primary" data-act="check"><span class="t">Проверить</span><span class="arr kbd">Enter</span></button>`;
+  } else {
+    const legend = q.sub === "change"
+      ? `<div class="legend">${CHANGE.map((c,j) => `<span class="ln"><span class="d">${j+1}</span><span>${c}</span></span>`).join("")}</div>`
+      : `<div class="legend">${q.choices.map((c,j) => `<span class="ln"><span class="d">${j+1})</span><span>${c}</span></span>`).join("")}</div>`;
+    const rows = q.rows.map((r,ri) => `<div class="rowq"><span class="rl">${"АБ"[ri]}) ${esc(r)}</span><div class="rc">${q.choices.map((_,j) => {
+      const d = j+1; let cls = "";
+      if (sess.checked) { if (q.ans[ri] === d) cls = "right"; else if (sess.rowPick[ri] === d) cls = "wrong"; }
+      else if (sess.rowPick[ri] === d) cls = "sel";
+      return `<button class="rb ${cls}" data-act="row" data-r="${ri}" data-d="${d}" ${sess.checked?"disabled":""}>${d}</button>`;
+    }).join("")}</div></div>`).join("");
+    body = `${legend}<div class="rows">${rows}</div>`;
+    if (!sess.checked) {
+      const full = q.rows.every((_,ri) => sess.rowPick[ri]);
+      const digits = q.rows.map((_,ri) => sess.rowPick[ri] || "·").join("");
+      foot = `<div class="answerline">Ответ (А, Б): ${cellsHtml(digits)}</div><button class="btn primary" data-act="check" ${full?"":"disabled"}><span class="t">Проверить</span><span class="arr kbd">Enter</span></button>`;
+    }
+  }
+  if (sess.checked) {
+    let right = "";
+    if (q.kind === "multi" || q.kind === "rows") right = `<div class="answerline">Правильный ответ: ${cellsHtml(answerDigits(q))}</div>`;
+    if (q.kind === "num") right = `<div class="answerline">Правильный ответ: <b class="mono">${fmtNum(q.ans)} ${esc(q.unit)}</b></div>`;
+    foot = `<div class="fb ${sess.lastOk?"ok":"bad"}"><span class="h">${sess.lastOk?"Верно":"Ошибка"}</span>${right}<p>${q.whyHtml ? q.why : esc(q.why||"")}</p>${q.life?`<div class="life"><span class="kicker">В жизни</span>${esc(q.life)}</div>`:""}${!sess.lastOk && sess.mode!=="boss" && !isRetry ? `<p class="note">Задание вернётся в конце и завтра.</p>`:""}</div>
+      <button class="btn primary" data-act="next"><span class="t">${sess.i+1 < all ? "Дальше" : "Завершить"}</span><span class="arr kbd">Enter</span></button>`;
+  }
+  app.innerHTML = `
+  <div class="qhead"><span class="kicker">${esc(title)}</span><button class="back" data-act="quit">Выйти</button></div>
+  <div class="progress"><i style="width:${Math.round(sess.i/all*100)}%"></i></div>
+  <section class="qcard">
+    <span class="note mono">${n} / ${all} · №${num}${isRetry?" · повтор ошибки":""}</span>
+    <div class="qtext">${q.prompt}</div>
+    ${q.def ? `<p class="qdef">${esc(q.def)}</p>` : ""}
+    ${q.svg || ""}
+    ${q.kind === "multi" ? `<p class="note">Выберите все верные утверждения.</p>` : ""}
+    ${q.sub === "change" ? `<p class="note">Для каждой величины выберите характер изменения. Цифры могут повторяться.</p>` : ""}
+    ${q.sub === "match" ? `<p class="note">К каждой позиции первого столбца подберите номер из списка.</p>` : ""}
+    ${body}
+    ${foot}
+  </section>`;
+  if (q.kind === "num" && !sess.checked) { const inp = document.getElementById("numans"); if (inp) inp.focus({preventScroll:true}); }
+}
+
+function parseNum(s){ s = String(s).trim().replace(/\s/g,"").replace(",",".").replace(/[−–]/g,"-"); if (!/^-?\d+(\.\d+)?$/.test(s)) return NaN; return Number(s); }
+function check(){
+  const q = sess.queue[sess.i];
+  let ok = false;
+  if (q.kind === "single") ok = sess.picked.has(q.ans) && sess.picked.size === 1;
+  else if (q.kind === "multi") ok = q.ans.length === sess.picked.size && q.ans.every(i => sess.picked.has(i));
+  else if (q.kind === "num") { const inp = document.getElementById("numans"); sess.typed = inp ? inp.value : ""; const v = parseNum(sess.typed); if (isNaN(v)) { if (inp) { inp.focus(); inp.placeholder = "число"; } return; } ok = Math.abs(v - q.ans) < 1e-9 * Math.max(1, Math.abs(q.ans)); }
+  else ok = q.ans.every((d,ri) => sess.rowPick[ri] === d);
+  sess.checked = true; sess.lastOk = ok;
+  if (sess.i < sess.total) {
+    if (ok) sess.correct++;
+    grade(q.item.id, ok); commit();
+    if (!ok && sess.mode !== "boss" && !sess.retried.has(q.item.id)) { sess.retried.add(q.item.id); sess.queue.push(makeInst(q.item)); }
+  }
+  renderQuestion();
+}
+function next(){
+  sess.i++; sess.picked = new Set(); sess.rowPick = []; sess.typed = ""; sess.checked = false;
+  if (sess.i >= sess.queue.length) return finish();
+  renderQuestion(); window.scrollTo(0,0);
+}
+function finish(){
+  const s = sess; sess = null;
+  let extra = "";
+  if (s.mode === "boss") {
+    const bs = BOSSES.find(b => b.id === s.meta.id);
+    const prev = S.boss[bs.id] || {best:0, passed:false};
+    const passed = s.correct >= bs.pass;
+    S.boss[bs.id] = {best:Math.max(prev.best, s.correct), passed:prev.passed || passed, date:today()};
+    commit();
+    extra = passed ? `<p><b>Босс повержен.</b> «${esc(bs.title)}» пройдена.</p>` : `<p>Нужно ${bs.pass} верных. Повтори задания, где ошибся, и возвращайся.</p>`;
+  }
+  const wrong = s.total - s.correct, nd = nextDueDate(), st = streak();
+  app.innerHTML = `
+  <section class="result">
+    <span class="kicker">${s.mode==="lesson"?"Тренировка завершена":s.mode==="boss"?"Босс":"Повторение завершено"}</span>
+    <div class="big mono">${s.correct}/${s.total}</div>
+    ${extra}
+    <p>${wrong ? `Ошибок: ${wrong}. Эти задания вернутся завтра.` : "Без ошибок."} ${nd ? "Следующее повторение — "+fmtDate(nd)+"." : ""}</p>
+    <p class="note">Серия: ${st} ${plural(st,"день","дня","дней")} подряд. Баллы под контролем: ${pointsHeld()} из 45.</p>
+    <div class="row"><button class="btn small" data-act="home">К заданиям</button></div>
+  </section>`;
+  window.scrollTo(0,0);
+}
+
+app.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  const act = el.dataset.act, id = el.dataset.id;
+  if (act === "home" || act === "quit") { sess = null; renderHome(); window.scrollTo(0,0); }
+  else if (act === "topic") renderTopic(id);
+  else if (act === "expand") { const ds = [...document.querySelectorAll("details.term")]; const open = !ds.every(d => d.open); ds.forEach(d => d.open = open); el.textContent = open ? "Свернуть все" : "Раскрыть все"; }
+  else if (act === "quiz") { S.lessons[id] = S.lessons[id] || today(); commit(); startSession("lesson", shuffle(TOPICS[id].itemIds), {topic:id}); }
+  else if (act === "review") startSession("review", dueIds().slice(0,30));
+  else if (act === "export") exportCode();
+  else if (act === "import") importCode();
+  else if (act === "boss") { const bs = BOSSES.find(b => b.id === id); const pool = bs.topics.flatMap(t => TOPICS[t].itemIds.filter(x => ITEMS[x].type !== "formula" && ITEMS[x].type !== "term")); startSession("boss", shuffle(pool).slice(0, bs.size), {id:bs.id, title:bs.title}); }
+  else if (!sess || sess.checked) { if (act === "next" && sess) next(); }
+  else if (act === "pick") {
+    const i = +el.dataset.i, q = sess.queue[sess.i];
+    if (q.kind === "single") { sess.picked = new Set([i]); check(); }
+    else { sess.picked.has(i) ? sess.picked.delete(i) : sess.picked.add(i); renderQuestion(); }
+  }
+  else if (act === "row") { sess.rowPick[+el.dataset.r] = +el.dataset.d; renderQuestion(); }
+  else if (act === "neg") { const inp = document.getElementById("numans"); if (inp) { inp.value = inp.value.startsWith("-") ? inp.value.slice(1) : "-" + inp.value; inp.focus(); } }
+  else if (act === "check") check();
+});
+
+document.addEventListener("keydown", e => {
+  if (!sess || e.metaKey || e.ctrlKey || e.altKey) return;
+  const q = sess.queue[sess.i];
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (sess.checked) return next();
+    if (q.kind === "num") return check();
+    if (q.kind === "multi" && sess.picked.size) return check();
+    if (q.kind === "rows" && q.rows.every((_,ri) => sess.rowPick[ri])) return check();
+    return;
+  }
+  if (e.target && e.target.tagName === "INPUT") return;
+  if (/^[1-9]$/.test(e.key) && !sess.checked && (q.kind === "single" || q.kind === "multi")) {
+    const i = +e.key - 1; if (i >= q.opts.length) return;
+    if (q.kind === "single") { sess.picked = new Set([i]); check(); }
+    else { sess.picked.has(i) ? sess.picked.delete(i) : sess.picked.add(i); renderQuestion(); }
+  }
+});
+
+loadLocal();
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
+renderHome();
+</script>
+</body></html>
